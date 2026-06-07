@@ -84,6 +84,119 @@ h4,
     transform: scale(1.01);
 }
 
+.summary-card {
+    --summary-accent: var(--color-primary);
+    --summary-bg: var(--color-primary-container);
+    --summary-note: var(--color-text-muted);
+    --summary-value: var(--color-text);
+    --summary-bg-soft: color-mix(in srgb, var(--summary-bg) 11%, #ffffff);
+    --summary-bg-wash: color-mix(in srgb, var(--summary-bg) 5%, #ffffff);
+    border: 1px solid color-mix(in srgb, var(--summary-accent) 10%, #ffffff);
+    background:
+        linear-gradient(145deg, var(--summary-bg-soft) 0%, #ffffff 52%, var(--summary-bg-wash) 100%);
+}
+
+.summary-card--balance {
+    --summary-accent: var(--color-primary);
+    --summary-bg: var(--color-purple-pastel);
+    --summary-note: var(--color-tertiary);
+    --summary-value: var(--color-primary);
+}
+
+.summary-card--income {
+    --summary-accent: var(--color-coral-saturated);
+    --summary-bg: var(--color-coral-pastel);
+    --summary-note: var(--color-coral-saturated);
+    --summary-value: var(--color-coral-saturated);
+}
+
+.summary-card--expense {
+    --summary-accent: var(--color-blue-saturated);
+    --summary-bg: var(--color-blue-saturated);
+    --summary-note: var(--color-blue-saturated);
+    --summary-value: var(--color-blue-saturated);
+}
+
+.summary-card--budget {
+    --summary-accent: var(--color-yellow-saturated);
+    --summary-bg: var(--color-yellow-pastel);
+    --summary-note: var(--color-yellow-saturated);
+    --summary-value: var(--color-yellow-saturated);
+}
+
+.summary-label {
+    color: var(--summary-accent);
+    font-weight: 700;
+}
+
+.summary-icon {
+    color: var(--summary-accent);
+    background-color: color-mix(in srgb, var(--summary-bg) 24%, #ffffff);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--summary-accent) 16%, transparent);
+}
+
+.summary-value {
+    color: var(--summary-value);
+    font-weight: 800;
+}
+
+.summary-note {
+    color: var(--summary-note);
+    font-weight: 600;
+}
+
+.summary-progress-track {
+    background-color: color-mix(in srgb, var(--summary-bg) 22%, #ffffff);
+}
+
+.summary-progress-bar {
+    background-color: var(--summary-accent);
+}
+
+@media (max-width: 640px) {
+    .summary-card {
+        --summary-bg-soft: color-mix(in srgb, var(--summary-bg) 18%, #ffffff);
+        --summary-bg-wash: color-mix(in srgb, var(--summary-bg) 8%, #ffffff);
+        min-height: 128px;
+        border-color: color-mix(in srgb, var(--summary-accent) 18%, #ffffff);
+        box-shadow: 0 8px 22px color-mix(in srgb, var(--summary-accent) 10%, transparent);
+    }
+
+    .summary-label {
+        font-size: 11px;
+        line-height: 14px;
+        letter-spacing: 0.04em;
+    }
+
+    .summary-icon {
+        padding: 0.42rem;
+        border-radius: 0.7rem;
+        background-color: color-mix(in srgb, var(--summary-bg) 34%, #ffffff);
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--summary-accent) 24%, transparent);
+    }
+
+    .summary-icon .material-symbols-outlined {
+        font-size: 20px;
+    }
+
+    .summary-value {
+        font-size: 26px;
+        line-height: 32px;
+        letter-spacing: 0;
+    }
+
+    .summary-note {
+        font-size: 11px;
+        line-height: 15px;
+        margin-top: 0.25rem;
+    }
+
+    .summary-progress-track,
+    .summary-progress-bar {
+        height: 0.55rem;
+    }
+}
+
 /* Scrollbar styling */
 .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
@@ -158,6 +271,19 @@ html.dark .bento-card {
     background-color: #1e1f18;
     /* Dark surface level 1 */
     box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.4);
+}
+
+html.dark .summary-card {
+    background:
+        linear-gradient(135deg,
+            color-mix(in srgb, var(--summary-accent) 14%, #1e1f18) 0%,
+            #1e1f18 62%);
+    border-color: color-mix(in srgb, var(--summary-accent) 20%, transparent);
+}
+
+html.dark .summary-icon,
+html.dark .summary-progress-track {
+    background-color: color-mix(in srgb, var(--summary-accent) 18%, #2b2c22);
 }
 
 html.dark aside,

@@ -1,327 +1,64 @@
-import { supabase } from './supabaseClient.js';
-
-// --- Internationalization / Translation Dictionary ---
-const i18n = {
-  vi: {
-    auth_tagline: "Cùng nhau quản lý chi tiêu nào",
-    auth_subtagline: "OhaYo giúp bạn quản lý ngân sách một cách nhẹ nhàng và hiệu quả",
-    login_welcome: "Mừng bạn quay trở lại!",
-    login_sub: "Vui lòng nhập thông tin để đăng nhập vào tài khoản.",
-    email_label: "Địa chỉ Email",
-    password_label: "Mật khẩu",
-    name_label: "Họ tên",
-    confirm_password_label: "Xác nhận mật khẩu",
-    forgot_pass: "Quên mật khẩu?",
-    login_btn: "Đăng nhập",
-    register_btn: "Tạo tài khoản",
-    no_acc: "Chưa có tài khoản?",
-    have_acc: "Đã có tài khoản?",
-    register_now: "Đăng ký ngay",
-    login_now: "Đăng nhập ngay",
-    or_continue: "HOẶC TIẾP TỤC VỚI",
-    google_signin: "Quick Login (Bypass password)",
-    nav_overview: "Tổng quan",
-    nav_transactions: "Giao dịch",
-    nav_budget: "Ngân sách",
-    nav_settings: "Cài đặt",
-    logout: "Đăng xuất",
-    add_transaction_btn: "Thêm giao dịch",
-    welcome_hi: "Xin chào",
-    card_balance: "TỔNG SỐ DƯ",
-    card_income: "TỔNG THU",
-    card_expense: "TỔNG CHI",
-    card_budget: "NGÂN SÁCH CÒN LẠI",
-    this_month: "tháng này",
-    sources: "Nguồn",
-    income_source_desc: "Nguồn: Lương & Freelance",
-    most_spend: "Nhiều nhất",
-    chart_title: "Biểu đồ chi tiêu",
-    chart_subtitle: "Phân bổ theo danh mục",
-    dashboard_budgets_title: "Các khoản chi tiêu",
-    dashboard_budgets_subtitle: "Chi tiết",
-    transactions_title: "Các giao dịch",
-    see_all: "Xem tất cả",
-    th_name: "Tên khoản chi",
-    th_category: "Danh mục",
-    th_date: "Ngày",
-    th_amount: "Số tiền",
-    th_actions: "Hành động",
-    quick_add_title: "Nhập nhanh",
-    btn_expense: "Chi tiêu",
-    btn_income: "Thu nhập",
-    input_amount: "Số tiền",
-    input_category: "Danh mục",
-    input_note: "Ghi chú",
-    input_date: "Ngày",
-    save_btn: "Lưu giao dịch",
-    voice_assistant: "Hoặc sử dụng trợ lý ảo",
-    voice_default: "Nhập bằng giọng nói",
-    voice_hint: '"Ăn sáng 35 ngàn đồng"',
-    goal_title: "Tiết kiệm mua Macbook",
-    goal_target: "Mục tiêu",
-    goal_progress: "Tiến độ",
-    goal_saved: "Đã tích lũy",
-    goal_remaining: "Còn thiếu",
-    goal_detail: "Chi tiết mục tiêu",
-    saving_for_mac: "Mua Macbook Pro",
-    add_savings: "Tích lũy thêm",
-    reset_goal: "Làm lại mục tiêu",
-    budget_limits: "Hạn mức ngân sách",
-    budget_desc: "Kiểm soát chi tiêu tháng bằng cách quản lý hạn mức.",
-    total_monthly_limit: "Hạn mức chi tiêu tổng",
-    edit_limit: "Thay đổi hạn mức",
-    cat_budgets: "Ngân sách theo danh mục",
-    acc_info: "Thông tin tài khoản",
-    btn_edit: "Chỉnh sửa",
-    member_since: "Thành viên từ 2023",
-    display_prefs: "Tùy chọn hiển thị",
-    pref_lang: "Ngôn ngữ",
-    pref_currency: "Tiền tệ",
-    pref_theme: "Chế độ giao diện",
-    theme_light: "Sáng",
-    theme_dark: "Tối",
-    theme_auto: "Tự động",
-    fin_mgmt: "Quản lý tài chính",
-    cat_title: "Danh mục chi tiêu",
-    cat_subtitle: "Tùy chỉnh icon và tên danh mục",
-    budget_sub: "Thiết lập chi tiêu tối đa mỗi tháng",
-    data_privacy: "Dữ liệu & Bảo mật",
-    export_title: "Xuất dữ liệu tài chính",
-    export_sub: "Tải lịch sử giao dịch (.csv, .xlsx)",
-    export_btn: "Tải xuống CSV",
-    logout_device: "Đăng xuất khỏi thiết bị",
-    opt_all_categories: "Tất cả danh mục",
-    opt_all_types: "Tất cả loại",
-    opt_date_new: "Mới nhất trước",
-    opt_date_old: "Cũ nhất trước",
-    opt_amount_high: "Số tiền giảm dần",
-    opt_amount_low: "Số tiền tăng dần",
-    trans_desc: "Quản lý và tìm kiếm lịch sử giao dịch của bạn",
-    toggle_stats_show: "Xem thêm chi tiết số dư & thu chi",
-    toggle_stats_hide: "Thu gọn"
-  },
-  en: {
-    auth_tagline: "Let's manage expenses together",
-    auth_subtagline: "OhaYo helps you track your budget gently and effectively",
-    login_welcome: "Welcome Back!",
-    login_sub: "Please enter your credentials to log in.",
-    email_label: "Email Address",
-    password_label: "Password",
-    name_label: "Full Name",
-    confirm_password_label: "Confirm Password",
-    forgot_pass: "Forgot Password?",
-    login_btn: "Login",
-    register_btn: "Create Account",
-    no_acc: "Don't have an account?",
-    have_acc: "Already have an account?",
-    register_now: "Register now",
-    login_now: "Login now",
-    or_continue: "OR CONTINUE WITH",
-    google_signin: "Quick Login (Bypass password)",
-    nav_overview: "Overview",
-    nav_transactions: "Transactions",
-    nav_budget: "Budget",
-    nav_settings: "Settings",
-    logout: "Log Out",
-    add_transaction_btn: "Add Transaction",
-    welcome_hi: "Welcome",
-    card_balance: "TOTAL BALANCE",
-    card_income: "TOTAL INCOME",
-    card_expense: "TOTAL EXPENSE",
-    card_budget: "REMAINING BUDGET",
-    this_month: "this month",
-    sources: "Sources",
-    income_source_desc: "Sources: Salary & Freelance",
-    most_spend: "Most Spent",
-    chart_title: "Expense Breakdown",
-    chart_subtitle: "Allocated by category",
-    dashboard_budgets_title: "Category Spending Limits",
-    dashboard_budgets_subtitle: "Budget utilization status",
-    transactions_title: "Transactions",
-    see_all: "See All",
-    th_name: "Name",
-    th_category: "Category",
-    th_date: "Date",
-    th_amount: "Amount",
-    th_actions: "Actions",
-    quick_add_title: "Quick Input",
-    btn_expense: "Expense",
-    btn_income: "Income",
-    input_amount: "Amount",
-    input_category: "Category",
-    input_note: "Note",
-    input_date: "Date",
-    save_btn: "Save Transaction",
-    voice_assistant: "Or use virtual voice assistant",
-    voice_default: "Voice Input",
-    voice_hint: '"Breakfast 35 thousand"',
-    goal_title: "Save for Macbook",
-    goal_target: "Target",
-    goal_progress: "Progress",
-    goal_saved: "Accumulated",
-    goal_remaining: "Remaining",
-    goal_detail: "Goal Details",
-    saving_for_mac: "Macbook Pro savings",
-    add_savings: "Add savings",
-    reset_goal: "Reset Goal",
-    budget_limits: "Monthly Budget Limit",
-    budget_desc: "Control your monthly spending by managing limits.",
-    total_monthly_limit: "Total Monthly Budget Limit",
-    edit_limit: "Edit Budget Limit",
-    cat_budgets: "Budget by Category",
-    acc_info: "Account Information",
-    btn_edit: "Edit Profile",
-    member_since: "Member since 2023",
-    display_prefs: "Display Preferences",
-    pref_lang: "Language",
-    pref_currency: "Currency",
-    pref_theme: "Theme Mode",
-    theme_light: "Light",
-    theme_dark: "Dark",
-    theme_auto: "Auto",
-    fin_mgmt: "Financial Management",
-    cat_title: "Expense Categories",
-    cat_subtitle: "Customize category name & icon",
-    budget_sub: "Set maximum spending per month",
-    data_privacy: "Data & Privacy",
-    export_title: "Export Financial Data",
-    export_sub: "Download transaction history (.csv, .xlsx)",
-    export_btn: "Download CSV",
-    logout_device: "Log out from device",
-    opt_all_categories: "All Categories",
-    opt_all_types: "All Types",
-    opt_date_new: "Newest first",
-    opt_date_old: "Oldest first",
-    opt_amount_high: "Amount: High to Low",
-    opt_amount_low: "Amount: Low to High",
-    trans_desc: "Manage and search your transaction history",
-    toggle_stats_show: "Show balance & flow details",
-    toggle_stats_hide: "Collapse"
-  }
-};
-
-// --- Brand Colors Palette ---
-const brandColors = {
-  teal: {
-    saturated: "#22e2c5",
-    pastel: "#d4ffea"
-  },
-  purple: {
-    saturated: "#716fa3",
-    pastel: "#eecbff"
-  },
-  blue: {
-    saturated: "#a2b1cc",
-    pastel: "#dbdcff"
-  },
-  yellow: {
-    saturated: "#fde6bb",
-    pastel: "#feffa3"
-  },
-  coral: {
-    saturated: "#fd846f",
-    pastel: "#ffd4e5"
-  }
-};
-
-// --- Cute Icon Picker List (20 items) ---
-const cuteIcons = [
-  "restaurant", "shopping_bag", "directions_car", "sports_esports", "work", "pending",
-  "local_cafe", "home", "bolt", "medical_services", "school", "flight", "pets",
-  "fitness_center", "spa", "redeem", "movie", "wifi", "handyman", "family_restroom"
-];
-
-// --- Pastel Color List ---
-const pastelColors = [
-  { value: "bg-brand-teal-light text-brand-teal", name: "Teal" },
-  { value: "bg-brand-purple-light text-brand-purple", name: "Purple" },
-  { value: "bg-brand-blue-light text-brand-blue", name: "Blue" },
-  { value: "bg-brand-yellow-light text-brand-yellow", name: "Yellow" },
-  { value: "bg-brand-coral-light text-brand-coral", name: "Coral" }
-];
+import { i18n } from './i18n/translations.js';
+import {
+  brandColors,
+  cuteIcons,
+  pastelColors,
+  defaultUser,
+  USD_RATE,
+  JPY_RATE
+} from './config/appConfig.js';
+import { formatCompactCurrencyAmount, formatCurrencyAmount, parseCurrencyInput, toBaseCurrency } from './utils/currency.js';
+import { getTodayDateString } from './utils/date.js';
+import { createInitialState } from './state/appState.js';
+import { createLocalTransaction } from './features/transactions/transactionService.js';
+import { createWallet } from './features/wallets/walletService.js';
+import {
+  clearSessionStorage,
+  loadStateFromLocalStorage,
+  resetLegacyDemoData,
+  saveSettingsToLocalStorage,
+  saveTransactionsToLocalStorage,
+  saveUserToLocalStorage,
+  saveWalletsToLocalStorage
+} from './storage/appStorage.js';
+import { onAuthStateChange, signInWithPassword, signOut, signUpWithPassword } from './services/authService.js';
+import {
+  createTransaction,
+  deleteTransactionById,
+  fetchProfile,
+  fetchSettings,
+  fetchTransactions,
+  moveCategoryTransactions,
+  saveSettings,
+  updateProfile
+} from './services/userDataService.js';
 
 // --- State Variables ---
-let state = {
-  isLoggedIn: false,
-  user: {
-    name: "Văn Thương",
-    email: "vanthuong@example.com"
-  },
-  transactions: [],
-  budgetLimit: 12000000, // default 12 mil VND
-  macbookGoal: {
-    target: 45000000,
-    saved: 0
-  },
-  language: "vi",
-  currency: "vnd",
-  theme: "light",
-  categoryLimits: {
-    dining: 4000000,
-    shopping: 3000000,
-    transport: 1500000,
-    entertainment: 2000000,
-    other: 1500000
-  },
-  currentType: "expense",
-  currentModalType: "expense",
-  categories: [],
-  isEditingBudgetWheel: false,
-  startAngleOffset: 0
-};
+let state = createInitialState();
 
 // Budget Wheel drag state variables
 let isDraggingBudgetWheel = false;
 let draggedBudgetWheelHandleIndex = -1;
 
-// --- Exchange Rate Constants ---
-const USD_RATE = 25000;
-const JPY_RATE = 160; // 1 JPY = 160 VND
-
-// --- Default Mock Transactions ---
-const defaultTransactions = [];
-
-
 // Chart Instance
 let expenseChartInstance = null;
 
-// --- Helper functions ---
-function getTodayDateString(offsetDays = 0) {
-  const d = new Date();
-  d.setDate(d.getDate() + offsetDays);
-  return d.toISOString().split('T')[0];
-}
-
 function formatCurrency(amount) {
-  if (state.currency === 'usd') {
-    const val = amount / USD_RATE;
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(val);
-  } else if (state.currency === 'jpy') {
-    const val = amount / JPY_RATE;
-    return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY', maximumFractionDigits: 0 }).format(val);
-  } else {
-    return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
-  }
+  return formatCurrencyAmount(amount, state.currency);
 }
 
 function formatCompactCurrency(amount) {
-  if (state.currency === 'usd') {
-    const val = amount / USD_RATE;
-    return new Intl.NumberFormat('en-US', { notation: 'compact', style: 'currency', currency: 'USD', maximumFractionDigits: 1 }).format(val);
-  } else if (state.currency === 'jpy') {
-    const val = amount / JPY_RATE;
-    return new Intl.NumberFormat('ja-JP', { notation: 'compact', style: 'currency', currency: 'JPY', maximumFractionDigits: 0 }).format(val);
-  } else {
-    if (amount >= 1e9) {
-      return (amount / 1e9).toFixed(amount % 1e9 === 0 ? 0 : 1) + 'B';
-    } else if (amount >= 1e6) {
-      return (amount / 1e6).toFixed(amount % 1e6 === 0 ? 0 : 1) + 'M';
-    } else if (amount >= 1e3) {
-      return (amount / 1e3).toFixed(amount % 1e3 === 0 ? 0 : 1) + 'K';
-    } else {
-      return amount + 'đ';
-    }
-  }
+  return formatCompactCurrencyAmount(amount, state.currency);
+}
+
+function resetNewAccountData() {
+  const freshState = createInitialState();
+  state.transactions = [];
+  state.wallets = [];
+  state.budgetLimit = freshState.budgetLimit;
+  state.macbookGoal = { ...freshState.macbookGoal };
+  state.categoryLimits = { ...freshState.categoryLimits };
+  state.startAngleOffset = 0;
 }
 
 // --- App Initializer ---
@@ -345,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupListeners();
 
   // 6. Set up Supabase Auth state change listener
-  supabase.auth.onAuthStateChange(async (event, session) => {
+  onAuthStateChange(async (event, session) => {
     if (session) {
       state.isLoggedIn = true;
       state.user = {
@@ -356,10 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
       await fetchUserData(session.user.id);
     } else {
       state.isLoggedIn = false;
-      state.user = {
-        name: "Văn Thương",
-        email: "vanthuong@example.com"
-      };
+      state.user = { ...defaultUser };
       loadStateFromStorage();
     }
     renderApp();
@@ -367,160 +101,38 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadStateFromStorage() {
-  // Auth session
-  const savedUser = localStorage.getItem("finz_user");
-  if (savedUser) {
-    const parsed = JSON.parse(savedUser);
-    // Auto-wipe old test user data from local storage
-    if (parsed.name === "Minh" || parsed.name === "Minh (Local Guest)" || parsed.name === "Khách" || parsed.name === "Khách (Local Guest)") {
-      localStorage.clear();
-      state.isLoggedIn = false;
-      state.user = {
-        name: "Văn Thương",
-        email: "vanthuong@example.com"
-      };
-      state.transactions = [];
-      return;
-    }
-    state.user = parsed;
-    state.isLoggedIn = true;
-  }
-
-  // Transactions
-  const savedTrans = localStorage.getItem("finz_transactions");
-  if (savedTrans) {
-    state.transactions = JSON.parse(savedTrans);
-  } else {
-    state.transactions = [...defaultTransactions];
-    localStorage.setItem("finz_transactions", JSON.stringify(state.transactions));
-  }
-
-  // Budget Limit
-  const savedBudget = localStorage.getItem("finz_budget_limit");
-  if (savedBudget) {
-    state.budgetLimit = parseInt(savedBudget, 10);
-  }
-
-  // Macbook Goal
-  const savedGoal = localStorage.getItem("finz_savings_goal");
-  if (savedGoal) {
-    state.macbookGoal = JSON.parse(savedGoal);
-  }
-
-  // Language
-  const savedLang = localStorage.getItem("finz_language");
-  if (savedLang) {
-    state.language = savedLang;
-  }
-
-  // Currency
-  const savedCurr = localStorage.getItem("finz_currency");
-  if (savedCurr) {
-    state.currency = savedCurr;
-  }
-
-  // Theme
-  const savedTheme = localStorage.getItem("finz_theme");
-  if (savedTheme) {
-    state.theme = savedTheme;
-  }
-
-  // Start Angle Offset
-  const savedOffset = localStorage.getItem("finz_start_angle_offset");
-  if (savedOffset) {
-    state.startAngleOffset = parseFloat(savedOffset);
-  } else {
-    state.startAngleOffset = 0;
-  }
-
-  // Category Limits
-  const savedCatLimits = localStorage.getItem("finz_category_limits");
-  if (savedCatLimits) {
-    state.categoryLimits = JSON.parse(savedCatLimits);
-  }
-
-  // Categories list
-  const savedCategories = localStorage.getItem("finz_categories");
-  if (savedCategories) {
-    state.categories = JSON.parse(savedCategories);
-    
-    // Migration: Update old class colors to new brand color classes
-    const oldToNewColorMap = {
-      "bg-tertiary-container text-on-tertiary-container": "bg-brand-teal-light text-brand-teal",
-      "bg-secondary-container text-on-secondary-container": "bg-brand-purple-light text-brand-purple",
-      "bg-primary-container/40 text-primary": "bg-brand-blue-light text-brand-blue",
-      "bg-yellow-100 text-yellow-800": "bg-brand-yellow-light text-brand-yellow",
-      "bg-emerald-100 text-emerald-800": "bg-brand-teal-light text-brand-teal",
-      "bg-surface-container-highest text-on-surface-variant": "bg-brand-blue-light text-brand-blue"
-    };
-    let migrated = false;
-    state.categories.forEach(cat => {
-      if (oldToNewColorMap[cat.color]) {
-        cat.color = oldToNewColorMap[cat.color];
-        migrated = true;
-      }
-    });
-    if (migrated) {
-      localStorage.setItem("finz_categories", JSON.stringify(state.categories));
-    }
-  } else {
-    state.categories = [
-      { id: "dining", nameVi: "Ăn uống", nameEn: "Dining", icon: "restaurant", color: "bg-brand-teal-light text-brand-teal" },
-      { id: "shopping", nameVi: "Mua sắm", nameEn: "Shopping", icon: "shopping_bag", color: "bg-brand-purple-light text-brand-purple" },
-      { id: "transport", nameVi: "Di chuyển", nameEn: "Transport", icon: "directions_car", color: "bg-brand-blue-light text-brand-blue" },
-      { id: "entertainment", nameVi: "Giải trí", nameEn: "Entertainment", icon: "sports_esports", color: "bg-brand-yellow-light text-brand-yellow" },
-      { id: "salary", nameVi: "Lương", nameEn: "Salary", icon: "work", color: "bg-brand-teal-light text-brand-teal" },
-      { id: "other", nameVi: "Khác", nameEn: "Other", icon: "pending", color: "bg-brand-blue-light text-brand-blue" }
-    ];
-    localStorage.setItem("finz_categories", JSON.stringify(state.categories));
-  }
+  loadStateFromLocalStorage(state);
 }
 
 function saveTransactionsToStorage() {
-  localStorage.setItem("finz_transactions", JSON.stringify(state.transactions));
+  saveTransactionsToLocalStorage(state.transactions);
+}
+
+function saveWalletsToStorage() {
+  saveWalletsToLocalStorage(state.wallets);
 }
 
 function saveSettingsToStorage() {
-  localStorage.setItem("finz_budget_limit", state.budgetLimit.toString());
-  localStorage.setItem("finz_savings_goal", JSON.stringify(state.macbookGoal));
-  localStorage.setItem("finz_language", state.language);
-  localStorage.setItem("finz_currency", state.currency);
-  localStorage.setItem("finz_theme", state.theme);
-  localStorage.setItem("finz_category_limits", JSON.stringify(state.categoryLimits));
-  localStorage.setItem("finz_categories", JSON.stringify(state.categories));
-  localStorage.setItem("finz_start_angle_offset", state.startAngleOffset.toString());
-  
+  saveSettingsToLocalStorage(state);
   saveSettingsToSupabase();
 }
 
 async function fetchUserData(userId) {
   try {
-    // 1. Fetch Profile Name
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('name')
-      .eq('id', userId)
-      .single();
-    
+    const profile = await fetchProfile(userId);
     if (profile) {
       state.user.name = profile.name;
     }
 
-    // 2. Fetch Settings
-    const { data: settings } = await supabase
-      .from('settings')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
-
+    const settings = await fetchSettings(userId);
     if (settings) {
-      state.budgetLimit = parseFloat(settings.budget_limit);
+      state.budgetLimit = Number(settings.budget_limit) || 0;
       state.categoryLimits = typeof settings.category_limits === 'string' 
         ? JSON.parse(settings.category_limits) 
         : settings.category_limits;
       state.macbookGoal = {
-        target: parseFloat(settings.savings_target),
-        saved: parseFloat(settings.savings_saved)
+        target: Number(settings.savings_target) || 0,
+        saved: Number(settings.savings_saved) || 0
       };
       state.currency = settings.currency;
       state.theme = settings.theme;
@@ -532,35 +144,17 @@ async function fetchUserData(userId) {
           ? JSON.parse(settings.categories) 
           : settings.categories;
       }
+    } else {
+      resetNewAccountData();
     }
 
-    // 3. Fetch Transactions
-    const { data: txs } = await supabase
-      .from('transactions')
-      .select('*')
-      .eq('user_id', userId)
-      .order('date', { ascending: false });
-
-    if (txs) {
-      state.transactions = txs.map(t => ({
-        id: t.id,
-        note: t.note,
-        category: t.category,
-        date: t.date,
-        amount: parseFloat(t.amount),
-        type: t.type
-      }));
-    }
-
+    state.transactions = await fetchTransactions(userId);
+    resetLegacyDemoData(state);
     // Sync to local storage as cache
-    localStorage.setItem("finz_transactions", JSON.stringify(state.transactions));
-    localStorage.setItem("finz_budget_limit", state.budgetLimit.toString());
-    localStorage.setItem("finz_savings_goal", JSON.stringify(state.macbookGoal));
-    localStorage.setItem("finz_language", state.language);
-    localStorage.setItem("finz_currency", state.currency);
-    localStorage.setItem("finz_theme", state.theme);
-    localStorage.setItem("finz_category_limits", JSON.stringify(state.categoryLimits));
-    localStorage.setItem("finz_categories", JSON.stringify(state.categories));
+    saveTransactionsToStorage();
+    saveWalletsToStorage();
+    saveSettingsToLocalStorage(state);
+    await saveSettingsToSupabase();
   } catch (err) {
     console.error("Error fetching user data from Supabase:", err);
   }
@@ -570,20 +164,7 @@ async function fetchUserData(userId) {
 async function saveSettingsToSupabase() {
   if (!state.isLoggedIn || !state.user.id) return;
   try {
-    await supabase
-      .from('settings')
-      .upsert({
-        user_id: state.user.id,
-        budget_limit: state.budgetLimit,
-        category_limits: state.categoryLimits,
-        savings_target: state.macbookGoal.target,
-        savings_saved: state.macbookGoal.saved,
-        currency: state.currency,
-        theme: state.theme,
-        language: state.language,
-        categories: state.categories,
-        updated_at: new Date().toISOString()
-      });
+    await saveSettings(state.user.id, state);
   } catch (err) {
     console.error("Error saving settings to Supabase:", err);
   }
@@ -766,7 +347,7 @@ window.saveCategory = function (e) {
   renderApp();
 };
 
-window.deleteCategory = function () {
+window.deleteCategory = async function () {
   const catId = document.getElementById("category-modal-id").value;
   if (!catId) return;
 
@@ -784,19 +365,16 @@ window.deleteCategory = function () {
       if (t.category === catId) {
         t.category = 'other';
         updatedTxsCount++;
-
-        if (state.isLoggedIn && state.user.id) {
-          supabase
-            .from('transactions')
-            .update({ category: 'other' })
-            .eq('id', t.id)
-            .eq('user_id', state.user.id)
-            .then(({ error }) => {
-              if (error) console.error("Error updating transaction category in Supabase:", error);
-            });
-        }
       }
     });
+
+    if (updatedTxsCount > 0 && state.isLoggedIn && state.user.id) {
+      try {
+        await moveCategoryTransactions(state.user.id, catId, 'other');
+      } catch (err) {
+        console.error("Error updating transaction category in Supabase:", err);
+      }
+    }
 
     if (updatedTxsCount > 0) {
       saveTransactionsToStorage();
@@ -876,18 +454,20 @@ function renderApp() {
   document.getElementById("stat-income").innerText = formatCurrency(totalIncome);
   document.getElementById("stat-expense").innerText = formatCurrency(totalExpense);
 
-  const remainingBudget = state.budgetLimit - totalExpense;
+  const hasBudgetLimit = state.budgetLimit > 0;
+  const remainingBudget = hasBudgetLimit ? state.budgetLimit - totalExpense : 0;
   document.getElementById("stat-remaining-budget").innerText = formatCurrency(remainingBudget);
 
   // Budget limit card progress bar
-  const budgetPercent = Math.min(100, Math.max(0, (totalExpense / state.budgetLimit) * 100));
-  document.getElementById("stat-budget-progress").style.width = `${100 - budgetPercent}%`;
+  const budgetPercent = hasBudgetLimit ? Math.min(100, Math.max(0, (totalExpense / state.budgetLimit) * 100)) : 0;
+  document.getElementById("stat-budget-progress").style.width = `${hasBudgetLimit ? 100 - budgetPercent : 0}%`;
 
   // Top expense category summary
   updateTopExpenseText();
 
   // Goal stats rendering
-  const goalPercent = Math.min(100, Math.max(0, (state.macbookGoal.saved / state.macbookGoal.target) * 100));
+  const hasSavingsGoal = state.macbookGoal.target > 0;
+  const goalPercent = hasSavingsGoal ? Math.min(100, Math.max(0, (state.macbookGoal.saved / state.macbookGoal.target) * 100)) : 0;
   document.getElementById("goal-target-val").innerText = formatCurrency(state.macbookGoal.target);
   document.getElementById("goal-saved-val").innerText = formatCurrency(state.macbookGoal.saved);
   document.getElementById("goal-progress-percent").innerText = `${Math.round(goalPercent)}%`;
@@ -905,8 +485,11 @@ function renderApp() {
 
   // Set Warning alerts if over budget
   const warnTextEl = document.getElementById("budget-limit-warning");
-  if (totalExpense > state.budgetLimit) {
-    warnTextEl.innerText = state.language === 'vi' ? "⚠️ Cảnh báo: Bạn đã chi tiêu quá hạn mức tháng!" : "⚠️ Warning: You have exceeded your monthly limit!";
+  if (!hasBudgetLimit) {
+    warnTextEl.innerText = state.language === 'vi' ? "Chưa thiết lập hạn mức ngân sách tháng." : "No monthly budget limit set.";
+    warnTextEl.className = "text-xs text-on-surface-variant mt-2";
+  } else if (totalExpense > state.budgetLimit) {
+    warnTextEl.innerText = state.language === 'vi' ? "Cảnh báo: Bạn đã chi tiêu quá hạn mức tháng!" : "Warning: You have exceeded your monthly limit!";
     warnTextEl.className = "text-xs text-brand-coral font-bold mt-2";
   } else {
     const remainingPercentage = Math.round(100 - budgetPercent);
@@ -918,9 +501,13 @@ function renderApp() {
   renderRecentTransactionsTable();
   renderFullTransactionsTable();
   renderCategoryBudgets();
+  renderWallets();
+  renderSavingsGoal();
+  populateWalletSelects();
 
   // Render Dashboard Category Budgets
   renderDashboardCategoryBudgets();
+  syncBudgetWheelEditControls();
 
   // Synced dropdowns/settings inputs
   document.getElementById("setting-language").value = state.language;
@@ -963,6 +550,73 @@ function populateCategorySelects() {
       opt3.textContent = name;
       filterCat.appendChild(opt3);
     }
+  });
+}
+
+function populateWalletSelects() {
+  const modalWallet = document.getElementById("modal-wallet");
+  if (!modalWallet) return;
+
+  modalWallet.innerHTML = "";
+  if (!state.wallets.length) {
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = state.language === 'vi' ? "Chưa có ví" : "No wallet";
+    modalWallet.appendChild(option);
+    return;
+  }
+
+  state.wallets.forEach(wallet => {
+    const option = document.createElement("option");
+    option.value = wallet.id;
+    option.textContent = wallet.name;
+    modalWallet.appendChild(option);
+  });
+}
+
+function renderWallets() {
+  const container = document.getElementById("wallets-list-container");
+  if (!container) return;
+
+  container.innerHTML = "";
+  if (!state.wallets.length) {
+    container.innerHTML = `<div class="p-4 text-center text-sm text-on-surface-variant">${state.language === 'vi' ? 'Chưa có ví nào' : 'No wallets yet'}</div>`;
+    return;
+  }
+
+  state.wallets.forEach(wallet => {
+    const item = `
+      <div class="flex items-center justify-between rounded-xl border border-outline-variant/10 bg-surface-container-lowest px-3 py-2.5">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-9 h-9 rounded-full ${wallet.color} flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-lg">${wallet.icon}</span>
+          </div>
+          <div class="min-w-0">
+            <p class="font-bold text-sm text-on-surface truncate">${wallet.name}</p>
+            <p class="text-xs text-on-surface-variant">${formatCurrency(wallet.balance || 0)}</p>
+          </div>
+        </div>
+      </div>
+    `;
+    container.insertAdjacentHTML("beforeend", item);
+  });
+}
+
+function renderSavingsGoal() {
+  const hasSavingsGoal = state.macbookGoal.target > 0;
+  const titleEls = document.querySelectorAll("[data-i18n='goal_title']");
+  const savingForEls = document.querySelectorAll("[data-i18n='saving_for_mac']");
+
+  titleEls.forEach(el => {
+    el.innerText = hasSavingsGoal
+      ? (state.language === 'vi' ? "Mục tiêu tiết kiệm" : "Savings Goal")
+      : (state.language === 'vi' ? "Chưa có mục tiêu" : "No savings goal");
+  });
+
+  savingForEls.forEach(el => {
+    el.innerText = hasSavingsGoal
+      ? (state.language === 'vi' ? "Mục tiêu hiện tại" : "Current goal")
+      : (state.language === 'vi' ? "Bạn chưa thiết lập mục tiêu tiết kiệm" : "No savings goal has been set");
   });
 }
 
@@ -1156,8 +810,8 @@ function renderCategoryBudgets() {
     if (cat.id === 'salary') return; // salary has no budget limit
 
     const spent = expenseMap[cat.id] || 0;
-    const limit = state.categoryLimits[cat.id] || 1500000;
-    const percent = Math.min(100, Math.round((spent / limit) * 100));
+    const limit = state.categoryLimits[cat.id] || 0;
+    const percent = limit > 0 ? Math.min(100, Math.round((spent / limit) * 100)) : 0;
     const name = state.language === 'vi' ? cat.nameVi : cat.nameEn;
 
     let barColor = "bg-primary";
@@ -1319,6 +973,56 @@ window.closeQuickAddModal = function () {
   }, 150);
 };
 
+window.openCreateWalletModal = function () {
+  const modal = document.getElementById("create-wallet-modal");
+  if (!modal) return;
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+  setTimeout(() => {
+    modal.querySelector("div").classList.remove("scale-95");
+    modal.querySelector("div").classList.add("scale-100");
+  }, 50);
+};
+
+window.closeCreateWalletModal = function () {
+  const modal = document.getElementById("create-wallet-modal");
+  if (!modal) return;
+  modal.querySelector("div").classList.remove("scale-100");
+  modal.querySelector("div").classList.add("scale-95");
+  setTimeout(() => {
+    modal.classList.remove("flex");
+    modal.classList.add("hidden");
+  }, 150);
+};
+
+window.handleCreateWallet = function (e) {
+  e.preventDefault();
+  const nameInput = document.getElementById("new-wallet-name");
+  const balanceInput = document.getElementById("new-wallet-balance");
+  const iconInput = document.getElementById("new-wallet-icon");
+  const colorInput = document.getElementById("new-wallet-color");
+
+  const name = nameInput.value.trim();
+  const balance = parseFloat(balanceInput.value) || 0;
+  if (!name) {
+    showToast(state.language === 'vi' ? "Vui lòng nhập tên ví!" : "Please enter wallet name!");
+    return;
+  }
+
+  state.wallets.push(createWallet({
+    name,
+    balance,
+    icon: iconInput.value,
+    color: colorInput.value
+  }));
+
+  saveWalletsToStorage();
+  e.target.reset();
+  closeCreateWalletModal();
+  renderApp();
+  showToast(state.language === 'vi' ? "Đã tạo ví mới!" : "Wallet created!");
+};
+
 window.setTransactionType = function (type) {
   state.currentType = type;
   const expBtn = document.getElementById("type-expense-btn");
@@ -1356,45 +1060,25 @@ window.handleQuickAdd = async function (e) {
   const categorySelect = document.getElementById("quick-category");
   const dateInput = document.getElementById("quick-date");
 
-  const rawAmount = parseFloat(amountInput.value);
-  let amount = rawAmount;
-  if (state.currency === 'usd') {
-    amount = rawAmount * USD_RATE;
-  } else if (state.currency === 'jpy') {
-    amount = rawAmount * JPY_RATE;
-  }
-
-  const newTrans = {
+  const newTrans = createLocalTransaction({
     note: noteInput.value,
     category: categorySelect.value,
     date: dateInput.value,
-    amount: amount,
-    type: state.currentType
-  };
+    rawAmount: parseFloat(amountInput.value),
+    type: state.currentType,
+    currency: state.currency
+  });
 
   if (state.isLoggedIn && state.user.id) {
     try {
-      const { data, error } = await supabase
-        .from('transactions')
-        .insert({
-          user_id: state.user.id,
-          note: newTrans.note,
-          category: newTrans.category,
-          date: newTrans.date,
-          amount: newTrans.amount,
-          type: newTrans.type
-        })
-        .select()
-        .single();
-      if (error) throw error;
-      newTrans.id = data.id;
+      Object.assign(newTrans, await createTransaction(state.user.id, newTrans));
     } catch (err) {
       console.error("Error inserting transaction to Supabase:", err);
       showToast(state.language === 'vi' ? "Lỗi lưu giao dịch!" : "Error saving transaction!");
       return;
     }
   } else {
-    newTrans.id = "t_" + Date.now();
+    newTrans.id = `t_${Date.now()}`;
   }
 
   state.transactions.push(newTrans);
@@ -1419,45 +1103,25 @@ window.handleModalAdd = async function (e) {
   const categorySelect = document.getElementById("modal-category");
   const dateInput = document.getElementById("modal-date");
 
-  const rawAmount = parseFloat(amountInput.value);
-  let amount = rawAmount;
-  if (state.currency === 'usd') {
-    amount = rawAmount * USD_RATE;
-  } else if (state.currency === 'jpy') {
-    amount = rawAmount * JPY_RATE;
-  }
-
-  const newTrans = {
+  const newTrans = createLocalTransaction({
     note: noteInput.value,
     category: categorySelect.value,
     date: dateInput.value,
-    amount: amount,
-    type: state.currentModalType
-  };
+    rawAmount: parseFloat(amountInput.value),
+    type: state.currentModalType,
+    currency: state.currency
+  });
 
   if (state.isLoggedIn && state.user.id) {
     try {
-      const { data, error } = await supabase
-        .from('transactions')
-        .insert({
-          user_id: state.user.id,
-          note: newTrans.note,
-          category: newTrans.category,
-          date: newTrans.date,
-          amount: newTrans.amount,
-          type: newTrans.type
-        })
-        .select()
-        .single();
-      if (error) throw error;
-      newTrans.id = data.id;
+      Object.assign(newTrans, await createTransaction(state.user.id, newTrans));
     } catch (err) {
       console.error("Error inserting transaction to Supabase:", err);
       showToast(state.language === 'vi' ? "Lỗi lưu giao dịch!" : "Error saving transaction!");
       return;
     }
   } else {
-    newTrans.id = "t_" + Date.now();
+    newTrans.id = `t_${Date.now()}`;
   }
 
   state.transactions.push(newTrans);
@@ -1479,12 +1143,7 @@ window.deleteTransaction = async function (id) {
   if (confirm(state.language === 'vi' ? "Bạn có chắc chắn muốn xóa giao dịch này?" : "Are you sure you want to delete this transaction?")) {
     if (state.isLoggedIn && state.user.id) {
       try {
-        const { error } = await supabase
-          .from('transactions')
-          .delete()
-          .eq('id', id)
-          .eq('user_id', state.user.id);
-        if (error) throw error;
+        await deleteTransactionById(state.user.id, id);
       } catch (err) {
         console.error("Error deleting transaction from Supabase:", err);
         showToast(state.language === 'vi' ? "Lỗi xóa giao dịch!" : "Error deleting transaction!");
@@ -1500,6 +1159,30 @@ window.deleteTransaction = async function (id) {
 };
 
 window.addSavingsDialog = function () {
+  if (state.macbookGoal.target <= 0) {
+    const targetInput = prompt(
+      state.language === 'vi'
+        ? `Nhập mục tiêu tiết kiệm đầu tiên (Đơn vị: ${state.currency.toUpperCase()}):`
+        : `Enter your first savings target (Unit: ${state.currency.toUpperCase()}):`,
+      state.currency === 'vnd' ? "1000000" : "100"
+    );
+
+    if (!targetInput) return;
+    const targetValue = parseCurrencyInput(targetInput);
+    if (isNaN(targetValue) || targetValue <= 0) {
+      alert(state.language === 'vi' ? "Mục tiêu không hợp lệ!" : "Invalid target!");
+      return;
+    }
+
+    const target = toBaseCurrency(targetValue, state.currency);
+
+    state.macbookGoal = { target, saved: 0 };
+    saveSettingsToStorage();
+    showToast(state.language === 'vi' ? "Đã tạo mục tiêu tiết kiệm!" : "Savings goal created!");
+    renderApp();
+    return;
+  }
+
   const maxVal = state.macbookGoal.target - state.macbookGoal.saved;
   if (maxVal <= 0) {
     alert(state.language === 'vi' ? "Chúc mừng! Bạn đã hoàn thành mục mục tiêu tiết kiệm này!" : "Congratulations! You have completed this saving goal!");
@@ -1512,14 +1195,12 @@ window.addSavingsDialog = function () {
   );
 
   if (input) {
-    const val = parseFloat(input);
+    const val = parseCurrencyInput(input);
     if (isNaN(val) || val <= 0) {
       alert(state.language === 'vi' ? "Số tiền không hợp lệ!" : "Invalid amount!");
       return;
     }
-    let amt = val;
-    if (state.currency === 'usd') amt = val * USD_RATE;
-    else if (state.currency === 'jpy') amt = val * JPY_RATE;
+    const amt = toBaseCurrency(val, state.currency);
 
     state.macbookGoal.saved += amt;
     if (state.macbookGoal.saved > state.macbookGoal.target) {
@@ -1614,14 +1295,11 @@ window.editProfileDialog = async function () {
 
   state.user.name = name;
   state.user.email = email;
-  localStorage.setItem("finz_user", JSON.stringify(state.user));
+  saveUserToLocalStorage(state.user);
 
   if (state.isLoggedIn && state.user.id) {
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .upsert({ id: state.user.id, name: name, email: email, updated_at: new Date().toISOString() });
-      if (error) throw error;
+      await updateProfile(state.user.id, name, email);
     } catch (err) {
       console.error("Error updating profile in Supabase:", err);
     }
@@ -1670,18 +1348,11 @@ window.exportTransactionsCSV = function () {
 window.handleLogout = async function () {
   if (confirm(state.language === 'vi' ? "Bạn có chắc chắn muốn đăng xuất?" : "Are you sure you want to log out?")) {
     try {
-      await supabase.auth.signOut();
+      await signOut();
     } catch (err) {
       console.error("Error signing out from Supabase:", err);
     }
-    localStorage.removeItem("finz_user");
-    localStorage.removeItem("finz_transactions");
-    localStorage.removeItem("finz_budget_limit");
-    localStorage.removeItem("finz_savings_goal");
-    localStorage.removeItem("finz_language");
-    localStorage.removeItem("finz_currency");
-    localStorage.removeItem("finz_theme");
-    localStorage.removeItem("finz_category_limits");
+    clearSessionStorage();
     
     state.isLoggedIn = false;
     renderApp();
@@ -1692,7 +1363,7 @@ window.editCategoryLimit = function (catId) {
   const catObj = state.categories.find(c => c.id === catId);
   if (!catObj) return;
   const name = state.language === 'vi' ? catObj.nameVi : catObj.nameEn;
-  const currentLimit = state.categoryLimits[catId] || 1500000;
+  const currentLimit = state.categoryLimits[catId] || 0;
   const input = prompt(
     state.language === 'vi'
       ? `Nhập hạn mức chi tiêu mới cho [${name}] (Đơn vị: ${state.currency.toUpperCase()}):`
@@ -1771,10 +1442,7 @@ function setupListeners() {
       submitBtn.disabled = true;
 
       try {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
+        const { error } = await signInWithPassword(email, password);
 
         if (error) {
           alert(state.language === 'vi' ? `Lỗi đăng nhập: ${error.message}` : `Login error: ${error.message}`);
@@ -1812,15 +1480,7 @@ function setupListeners() {
       submitBtn.disabled = true;
 
       try {
-        const { error } = await supabase.auth.signUp({
-          email: email,
-          password: password,
-          options: {
-            data: {
-              name: name
-            }
-          }
-        });
+        const { error } = await signUpWithPassword(name, email, password);
 
         if (error) {
           alert(state.language === 'vi' ? `Lỗi đăng ký: ${error.message}` : `Registration error: ${error.message}`);
@@ -1841,37 +1501,18 @@ function setupListeners() {
     });
   }
 
-  // Bypass / Google Quick Login
+  // Local demo login without embedding reusable credentials in the client bundle.
   const googleBtn = document.getElementById("google-login-btn");
   if (googleBtn) {
-    googleBtn.addEventListener("click", async () => {
-      const email = "vanthuong@example.com";
-      const password = "password123";
-
-      try {
-        if (!supabase || !supabase.auth) {
-          throw new Error("Supabase auth client not initialized");
-        }
-        const { error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
-
-        if (error) {
-          throw error;
-        }
-        showToast(state.language === 'vi' ? "Đăng nhập Demo Account thành công!" : "Demo login successful!");
-      } catch (err) {
-        console.warn("Supabase auth failed. Falling back to local offline mode:", err.message);
-        state.user = {
-          name: "Văn Thương (Local Guest)",
-          email: "vanthuong@example.com"
-        };
-        state.isLoggedIn = true;
-        localStorage.setItem("finz_user", JSON.stringify(state.user));
-        showToast(state.language === 'vi' ? "Đăng nhập Local Guest thành công!" : "Local Guest login successful!");
-        renderApp();
-      }
+    googleBtn.addEventListener("click", () => {
+      state.user = {
+        ...defaultUser,
+        name: `${defaultUser.name} (Demo)`
+      };
+      state.isLoggedIn = true;
+      saveUserToLocalStorage(state.user);
+      showToast(state.language === 'vi' ? "Đăng nhập Demo thành công!" : "Demo login successful!");
+      renderApp();
     });
   }
 
@@ -1879,6 +1520,11 @@ function setupListeners() {
   const modal = document.getElementById("quick-add-modal");
   if (modal) {
     modal.addEventListener("click", () => closeQuickAddModal());
+  }
+
+  const walletModal = document.getElementById("create-wallet-modal");
+  if (walletModal) {
+    walletModal.addEventListener("click", () => closeCreateWalletModal());
   }
 
   // Budget Wheel Global Drag Events
@@ -1991,37 +1637,41 @@ function setCenterInfo(label, value, colorClass = '') {
 }
 
 // Toggle edit mode
-window.toggleBudgetWheelEdit = function() {
-  state.isEditingBudgetWheel = !state.isEditingBudgetWheel;
-  
+function syncBudgetWheelEditControls() {
   const btnText = document.getElementById("budget-wheel-edit-text");
   const btnIcon = document.getElementById("budget-wheel-edit-icon");
   const subtitle = document.getElementById("budget-wheel-subtitle");
-  
+
   if (state.isEditingBudgetWheel) {
     if (btnText) btnText.innerText = state.language === 'vi' ? "Lưu" : "Save";
     if (btnIcon) btnIcon.innerText = "check";
     if (subtitle) {
-      subtitle.innerText = state.language === 'vi' 
-        ? "Kéo thả các thanh chia để phân bổ ngân sách" 
+      subtitle.innerText = state.language === 'vi'
+        ? "Kéo thả các thanh chia để phân bổ ngân sách"
         : "Drag dividers to allocate budget";
       subtitle.className = "text-xs text-secondary font-bold animate-pulse";
     }
-  } else {
-    if (btnText) btnText.innerText = state.language === 'vi' ? "Chỉnh sửa" : "Edit";
-    if (btnIcon) btnIcon.innerText = "edit";
-    if (subtitle) {
-      subtitle.innerText = state.language === 'vi' 
-        ? "Tình hình sử dụng hạn mức" 
-        : "Budget utilization status";
-      subtitle.className = "text-xs text-on-surface-variant";
-    }
-    
-    // Save to local storage and sync to Supabase
+    return;
+  }
+
+  if (btnText) btnText.innerText = state.language === 'vi' ? "Chỉnh sửa" : "Edit";
+  if (btnIcon) btnIcon.innerText = "edit";
+  if (subtitle) {
+    subtitle.innerText = state.language === 'vi'
+      ? "Tình hình sử dụng hạn mức"
+      : "Budget utilization status";
+    subtitle.className = "text-xs text-on-surface-variant";
+  }
+}
+
+window.toggleBudgetWheelEdit = function() {
+  state.isEditingBudgetWheel = !state.isEditingBudgetWheel;
+
+  if (!state.isEditingBudgetWheel) {
     saveSettingsToStorage();
     showToast(state.language === 'vi' ? "Đã lưu phân bổ ngân sách mới!" : "New budget allocation saved!");
   }
-  
+
   renderApp();
 };
 
@@ -2049,7 +1699,7 @@ function handleBudgetWheelDrag(e) {
   categoriesToShow.forEach(cat => {
     totalCategoryBudget += state.categoryLimits[cat.id] || 0;
   });
-  if (totalCategoryBudget === 0) totalCategoryBudget = 1000000;
+  if (totalCategoryBudget === 0) return;
 
   const angles = [0];
   let currentAngle = 0;
@@ -2149,7 +1799,10 @@ function endBudgetWheelDrag() {
   categoriesToShow.forEach(cat => {
     totalCategoryBudget += state.categoryLimits[cat.id] || 0;
   });
-  if (totalCategoryBudget === 0) totalCategoryBudget = 1000000;
+  if (totalCategoryBudget === 0) {
+    renderEmptyBudgetWheel(svg);
+    return;
+  }
 
   // Currency-aware rounding steps
   let step = 50000;
@@ -2200,6 +1853,38 @@ function endBudgetWheelDrag() {
 }
 
 // --- Dashboard Category Budgets Rendering ---
+function renderEmptyBudgetWheel(svg) {
+  const emptyGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+  const ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  ring.setAttribute("cx", "340");
+  ring.setAttribute("cy", "200");
+  ring.setAttribute("r", "82");
+  ring.setAttribute("fill", "none");
+  ring.setAttribute("stroke", "#e3e3d5");
+  ring.setAttribute("stroke-width", "28");
+  ring.setAttribute("opacity", "0.55");
+  emptyGroup.appendChild(ring);
+
+  const title = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  title.setAttribute("x", "340");
+  title.setAttribute("y", "194");
+  title.setAttribute("text-anchor", "middle");
+  title.setAttribute("class", "font-bold text-[18px] fill-current text-on-surface");
+  title.textContent = state.language === 'vi' ? "Chưa có ngân sách" : "No budget yet";
+  emptyGroup.appendChild(title);
+
+  const subtitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  subtitle.setAttribute("x", "340");
+  subtitle.setAttribute("y", "218");
+  subtitle.setAttribute("text-anchor", "middle");
+  subtitle.setAttribute("class", "text-[16px] fill-current text-on-surface-variant");
+  subtitle.textContent = state.language === 'vi' ? "Thiết lập hạn mức để bắt đầu" : "Set limits to begin";
+  emptyGroup.appendChild(subtitle);
+
+  svg.appendChild(emptyGroup);
+}
+
 function renderDashboardCategoryBudgets() {
   const container = document.getElementById("dashboard-category-budgets");
   const svg = document.getElementById("budget-wheel-svg");
@@ -2221,7 +1906,10 @@ function renderDashboardCategoryBudgets() {
   categoriesToShow.forEach(cat => {
     totalCategoryBudget += state.categoryLimits[cat.id] || 0;
   });
-  if (totalCategoryBudget === 0) totalCategoryBudget = 1000000;
+  if (totalCategoryBudget === 0) {
+    renderEmptyBudgetWheel(svg);
+    return;
+  }
 
   const angles = [0];
   let currentAngle = 0;
@@ -2370,7 +2058,7 @@ function renderDashboardCategoryBudgets() {
 
     const spent = expenseMap[cat.id] || 0;
     const limit = state.categoryLimits[cat.id] || 0;
-    const percent = Math.min(100, Math.round((spent / limit) * 100));
+    const percent = limit > 0 ? Math.min(100, Math.round((spent / limit) * 100)) : 0;
     const name = state.language === 'vi' ? cat.nameVi : cat.nameEn;
     const colors = getHexColorsForCategory(cat);
 
