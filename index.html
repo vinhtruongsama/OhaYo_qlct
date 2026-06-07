@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html class="light" lang="vi">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>OhaYo quản lý chi tiêu</title>
+  <meta name="description"
+    content="OhaYo là một công cụ quản lý chi tiêu với các tính năng nổi bật như nhập liệu nhanh bằng giọng nói, theo dõi chi tiêu chi tiết, đặt ngân sách và mục tiêu tiết kiệm, biểu đồ trực quan và đồng bộ đa thiết bị. Với giao diện hiện đại và thân thiện với người dùng, OhaYo giúp bạn kiểm soát tài chính cá nhân một cách hiệu quả và tiện lợi.">
+
+  <!-- Tailwind CSS & Plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet">
+
+  <!-- Chart.js CDN for premium interactive charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="./index.css">
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "brand-teal": "var(--color-teal-saturated)",
+            "brand-teal-light": "var(--color-teal-pastel)",
+            "brand-purple": "var(--color-purple-saturated)",
+            "brand-purple-light": "var(--color-purple-pastel)",
+            "brand-blue": "var(--color-blue-saturated)",
+            "brand-blue-light": "var(--color-blue-pastel)",
+            "brand-yellow": "var(--color-yellow-saturated)",
+            "brand-yellow-light": "var(--color-yellow-pastel)",
+            "brand-coral": "var(--color-coral-saturated)",
+            "brand-coral-light": "var(--color-coral-pastel)",
+            "on-primary-fixed-variant": "var(--color-primary)",
+            "primary-fixed": "var(--color-purple-pastel)",
+            "on-tertiary-container": "var(--color-text)",
+            "secondary": "var(--color-secondary)",
+            "primary-container": "var(--color-primary-container)",
+            "secondary-container": "var(--color-secondary-container)",
+            "surface-container-highest": "#e3e3d5",
+            "tertiary-fixed": "var(--color-tertiary-container)",
+            "on-background": "var(--color-text)",
+            "inverse-on-surface": "#f1f2e3",
+            "inverse-primary": "var(--color-primary-container)",
+            "primary": "var(--color-primary)",
+            "outline": "#72787a",
+            "on-secondary-fixed-variant": "var(--color-secondary)",
+            "on-primary": "#ffffff",
+            "secondary-fixed-dim": "var(--color-secondary-container)",
+            "on-tertiary-fixed": "var(--color-text)",
+            "inverse-surface": "#2f3128",
+            "surface-dim": "#dbdbcd",
+            "outline-variant": "#c2c7ca",
+            "primary-fixed-dim": "var(--color-primary-container)",
+            "surface-container-lowest": "#ffffff",
+            "tertiary": "var(--color-tertiary)",
+            "on-surface-variant": "var(--color-text-muted)",
+            "background": "#fafaeb",
+            "on-primary-container": "var(--color-text)",
+            "on-error-container": "#93000a",
+            "on-secondary": "#ffffff",
+            "secondary-fixed": "var(--color-secondary-container)",
+            "surface-container": "#efefe0",
+            "surface-container-low": "#f4f5e6",
+            "error": "#ba1a1a",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "on-surface": "var(--color-text)",
+            "on-tertiary": "var(--color-text)",
+            "on-tertiary-fixed-variant": "var(--color-tertiary)",
+            "surface-variant": "#e3e3d5",
+            "on-secondary-container": "var(--color-text)",
+            "surface-container-high": "#e9e9db",
+            "surface": "#fafaeb",
+            "on-primary-fixed": "var(--color-text)",
+            "surface-bright": "#fafaeb",
+            "on-secondary-fixed": "var(--color-text)",
+            "tertiary-container": "var(--color-tertiary-container)",
+            "tertiary-fixed-dim": "var(--color-tertiary-container)",
+            "surface-tint": "var(--color-primary)"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "20px",
+            "container-padding-desktop": "40px",
+            "base": "8px",
+            "container-padding-mobile": "16px",
+            "section-gap": "32px"
+          },
+          "fontFamily": {
+            "headline-lg": ["Quicksand"],
+            "headline-lg-mobile": ["Quicksand"],
+            "body-lg": ["Inter"],
+            "headline-md": ["Quicksand"],
+            "label-sm": ["Inter"],
+            "body-md": ["Inter"]
+          },
+          "fontSize": {
+            "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "30px", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-surface text-on-surface">
+
+  <!-- ==============================================
+       1. AUTHENTICATION SECTION (Login / Register)
+       ============================================== -->
+  <div id="auth-page" class="min-h-screen flex items-center justify-center p-4">
+    <main
+      class="max-w-[1100px] w-full flex flex-col md:flex-row items-stretch gap-0 overflow-hidden rounded-[24px] custom-shadow bg-surface-container-lowest transition-all duration-300">
+      <!-- Left Side: Illustration -->
+      <section
+        class="hidden md:flex flex-1 flex-col items-center justify-center p-12 bg-surface-container-low border-r border-outline-variant/10 relative">
+        <div class="z-10 text-center">
+          <div class="mb-8 flex justify-center">
+            <!-- FinZ Illustration -->
+            <img alt="FinZ Illustration" class="w-full max-w-sm drop-shadow-xl animate-float"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAufExTYNcXpCLGOHY_g_TipaRVl6t46Tj2L62fY9ssWxNPANZknUhI8rWvcIIUbPgYcHb44LyI9K8dvZFDSzobzYUvKkFnHN90jMQ37BMbsElBLx6wxoKzGDLqd_A5CYNiTF-dXHOloS_WHPcKt-uvwnlXT5GlAdYXBqM-K_KuShp1oa4cZLAR88GFUkPt6bbuyaVsZ3hUT_DLYcu4l5yfgnXkztp-ufPAjlArMAFZ7O9jaA05vatWOTDqBtTAHmLTgTW2J3T3NV4">
+          </div>
+          <h1 class="font-headline-lg text-headline-lg text-primary mb-4" data-i18n="auth_tagline">Cùng nhau quản lý chi
+            tiêu nào</h1>
+          <p class="font-body-lg text-body-lg text-on-surface-variant max-w-sm mx-auto" data-i18n="auth_subtagline">
+            OhaYo giúp bạn quản lý ngân sách một cách nhẹ nhàng và hiệu quả</p>
+        </div>
+        <!-- Decorative Background Elements -->
+        <div
+          class="absolute bottom-[-10%] left-[-10%] w-[45%] h-[45%] bg-secondary-container/30 rounded-full blur-[80px]">
+        </div>
+        <div class="absolute top-[-10%] right-[-10%] w-[35%] h-[35%] bg-primary-container/20 rounded-full blur-[60px]">
+        </div>
+      </section>
+
+      <!-- Right Side: Auth Form -->
+      <section class="flex-1 p-8 md:p-16 flex flex-col justify-center bg-white relative">
+        <div class="max-w-md w-full mx-auto">
+          <!-- Logo & Header -->
+          <div class="mb-10 text-center md:text-left">
+            <div class="flex items-center gap-3 mb-6 justify-center md:justify-start">
+              <!-- SVG Inline FinZ Logo -->
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="40" rx="12" fill="var(--color-blue-saturated)" />
+                <path
+                  d="M12 14C12 12.8954 12.8954 12 14 12H26C27.1046 12 28 12.8954 28 14V26C28 27.1046 27.1046 28 26 28H14C12.8954 28 12 27.1046 12 26V14Z"
+                  fill="white" />
+                <path d="M22 18H28V22H22V18Z" fill="var(--color-blue-saturated)" />
+                <circle cx="25" cy="20" r="2" fill="white" />
+                <path d="M12 16H28V18H12V16Z" fill="#f4f5e6" />
+              </svg>
+              <span class="font-headline-lg text-headline-lg text-primary font-bold">OhaYo</span>
+            </div>
+            <div id="form-header">
+              <h2 class="font-headline-md text-headline-md text-on-surface mb-2" data-i18n="login_welcome">Mừng bạn quay
+                trở lại!</h2>
+              <p class="font-body-md text-body-md text-on-surface-variant" data-i18n="login_sub">Vui lòng nhập thông tin
+                để đăng nhập vào tài khoản.</p>
+            </div>
+          </div>
+
+          <!-- Login Form -->
+          <form class="space-y-6 block" id="login-form">
+            <div class="space-y-2">
+              <label class="font-label-sm text-label-sm text-on-surface-variant" for="login-email"
+                data-i18n="email_label">Địa chỉ Email</label>
+              <input
+                class="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary-container transition-all outline-none text-body-md font-body-md placeholder:text-outline-variant"
+                id="login-email" placeholder="example@email.com" type="email" required>
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between items-center">
+                <label class="font-label-sm text-label-sm text-on-surface-variant" for="login-password"
+                  data-i18n="password_label">Mật khẩu</label>
+                <a class="font-label-sm text-label-sm text-primary hover:underline" href="#"
+                  data-i18n="forgot_pass">Quên mật khẩu?</a>
+              </div>
+              <input
+                class="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary-container transition-all outline-none text-body-md font-body-md placeholder:text-outline-variant"
+                id="login-password" placeholder="••••••••" type="password" required>
+            </div>
+            <button
+              class="w-full py-4 bg-primary text-white font-headline-md text-headline-md rounded-xl shadow-sm hover:scale-[1.02] active:scale-95 transition-all cursor-pointer font-bold"
+              type="submit" data-i18n="login_btn">
+              Đăng nhập
+            </button>
+            <div class="text-center pt-4">
+              <p class="font-body-md text-body-md text-on-surface-variant">
+                <span data-i18n="no_acc">Chưa có tài khoản?</span>
+                <button class="text-primary font-bold hover:underline cursor-pointer" onclick="toggleAuth('register')"
+                  type="button" data-i18n="register_now">Đăng ký ngay</button>
+              </p>
+            </div>
+          </form>
+
+          <!-- Register Form (Hidden by Default) -->
+          <form class="space-y-4 hidden" id="register-form">
+            <div class="space-y-1">
+              <label class="font-label-sm text-label-sm text-on-surface-variant" for="reg-name"
+                data-i18n="name_label">Họ tên</label>
+              <input
+                class="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary-container transition-all outline-none text-body-md font-body-md placeholder:text-outline-variant"
+                id="reg-name" placeholder="Nguyễn An Việt" type="text" required>
+            </div>
+            <div class="space-y-1">
+              <label class="font-label-sm text-label-sm text-on-surface-variant" for="reg-email"
+                data-i18n="email_label">Email</label>
+              <input
+                class="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary-container transition-all outline-none text-body-md font-body-md placeholder:text-outline-variant"
+                id="reg-email" placeholder="example@email.com" type="email" required>
+            </div>
+            <div class="space-y-1">
+              <label class="font-label-sm text-label-sm text-on-surface-variant" for="reg-password"
+                data-i18n="password_label">Mật khẩu</label>
+              <input
+                class="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary-container transition-all outline-none text-body-md font-body-md placeholder:text-outline-variant"
+                id="reg-password" placeholder="Tối thiểu 8 ký tự" type="password" required>
+            </div>
+            <div class="space-y-1">
+              <label class="font-label-sm text-label-sm text-on-surface-variant" for="reg-confirm"
+                data-i18n="confirm_password_label">Xác nhận mật khẩu</label>
+              <input
+                class="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary-container transition-all outline-none text-body-md font-body-md placeholder:text-outline-variant"
+                id="reg-confirm" placeholder="Nhập lại mật khẩu" type="password" required>
+            </div>
+            <button
+              class="w-full py-4 bg-primary text-white font-headline-md text-headline-md rounded-xl shadow-sm hover:scale-[1.02] active:scale-95 transition-all cursor-pointer font-bold mt-4"
+              type="submit" data-i18n="register_btn">
+              Tạo tài khoản
+            </button>
+            <div class="text-center pt-4">
+              <p class="font-body-md text-body-md text-on-surface-variant">
+                <span data-i18n="have_acc">Đã có tài khoản?</span>
+                <button class="text-primary font-bold hover:underline cursor-pointer" onclick="toggleAuth('login')"
+                  type="button" data-i18n="login_now">Đăng nhập ngay</button>
+              </p>
+            </div>
+          </form>
+
+          <!-- Social Login Divider -->
+          <div class="mt-8 flex items-center gap-4 justify-center">
+            <div class="h-[1px] flex-1 bg-outline-variant/30"></div>
+            <span class="text-label-sm font-label-sm text-outline-variant" data-i18n="or_continue">HOẶC TIẾP TỤC
+              VỚI</span>
+            <div class="h-[1px] flex-1 bg-outline-variant/30"></div>
+          </div>
+
+          <!-- Social Buttons -->
+          <div class="mt-8 flex gap-4 justify-center">
+            <button id="google-login-btn" type="button"
+              class="flex items-center justify-center gap-2 border border-outline-variant rounded-xl hover:bg-surface-container-low transition-all active:scale-95 px-6 py-2.5 w-full">
+              <span class="material-symbols-outlined text-primary">login</span>
+              <span class="font-bold text-sm text-primary" data-i18n="google_signin">Đăng nhập thử nghiệm (Bỏ
+                qua)</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+
+  <!-- ==============================================
+       2. MAIN APP VIEW
+       ============================================== -->
+  <div id="app-page" class="hidden min-h-screen">
+
+    <!-- Sidebar Navigation (Desktop) -->
+    <aside
+      class="fixed left-0 top-0 p-4 space-y-4 h-screen w-64 hidden lg:flex flex-col bg-surface-container-low z-40 border-r border-outline-variant/10">
+      <div class="flex items-center space-x-3 mb-8 px-2">
+        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-on-primary">
+          <span class="material-symbols-outlined fill-icon">account_balance_wallet</span>
+        </div>
+        <div>
+          <h1 class="font-headline-md text-headline-md text-primary font-bold">OhaYo</h1>
+        </div>
+      </div>
+
+      <nav class="flex-1 space-y-2">
+        <a id="nav-dashboard-dt" onclick="switchTab('dashboard')"
+          class="flex items-center px-4 py-3 bg-primary-container text-on-primary-container rounded-xl font-bold transition-all duration-200 cursor-pointer hover:bg-primary-container"
+          href="javascript:void(0)">
+          <span class="material-symbols-outlined mr-3">dashboard</span>
+          <span class="font-body-md text-body-md" data-i18n="nav_overview">Tổng quan</span>
+        </a>
+        <a id="nav-transactions-dt" onclick="switchTab('transactions')"
+          class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest rounded-xl transition-all duration-200 cursor-pointer"
+          href="javascript:void(0)">
+          <span class="material-symbols-outlined mr-3">swap_horiz</span>
+          <span class="font-body-md text-body-md" data-i18n="nav_transactions">Giao dịch</span>
+        </a>
+        <a id="nav-budget-dt" onclick="switchTab('budget')"
+          class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest rounded-xl transition-all duration-200 cursor-pointer"
+          href="javascript:void(0)">
+          <span class="material-symbols-outlined mr-3">account_balance_wallet</span>
+          <span class="font-body-md text-body-md" data-i18n="nav_budget">Ngân sách</span>
+        </a>
+        <a id="nav-settings-dt" onclick="switchTab('settings')"
+          class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest rounded-xl transition-all duration-200 cursor-pointer"
+          href="javascript:void(0)">
+          <span class="material-symbols-outlined mr-3">settings</span>
+          <span class="font-body-md text-body-md" data-i18n="nav_settings">Cài đặt</span>
+        </a>
+      </nav>
+
+      <div class="pt-4 border-t border-outline-variant/30">
+        <button onclick="openQuickAddModal()"
+          class="w-full py-3 px-4 bg-primary text-on-primary rounded-xl font-bold hover:scale-[1.02] active:opacity-80 transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined">add</span>
+          <span data-i18n="add_transaction_btn">Thêm giao dịch</span>
+        </button>
+        <button onclick="handleLogout()"
+          class="w-full flex items-center px-4 py-3 mt-4 text-on-surface-variant hover:bg-error-container hover:text-on-error-container rounded-xl transition-all duration-200 cursor-pointer">
+          <span class="material-symbols-outlined mr-3">logout</span>
+          <span class="font-body-md text-body-md" data-i18n="logout">Đăng xuất</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel Wrapper -->
+    <main class="lg:ml-64 min-h-screen pb-24 lg:pb-8 flex flex-col">
+
+      <!-- Top App Bar -->
+      <header
+        class="w-full h-16 bg-surface px-container-padding-mobile lg:px-container-padding-desktop flex justify-between items-center max-w-[1200px] mx-auto border-b border-outline-variant/10">
+        <div class="lg:hidden flex items-center gap-2">
+          <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+            <span class="material-symbols-outlined text-lg fill-icon">account_balance_wallet</span>
+          </div>
+          <span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">OhaYo</span>
+        </div>
+        <div class="hidden lg:block">
+          <h2 class="font-headline-md text-headline-md text-on-surface"><span data-i18n="welcome_hi">Xin chào</span>,
+            <span id="header-user-name">Minh</span>! 👋
+          </h2>
+        </div>
+        <div class="flex items-center gap-4">
+          <button class="material-symbols-outlined text-primary p-2 hover:bg-surface-container rounded-full relative"
+            onclick="alert('Không có thông báo mới!')">
+            notifications
+            <span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+          </button>
+          <button class="material-symbols-outlined text-primary p-2 hover:bg-surface-container rounded-full"
+            onclick="alert('Hướng dẫn sử dụng OhaYo:\n1. Nhập nhanh giao dịch ở góc phải.\n2. Sử dụng giọng nói để nhận diện nhanh.\n3. Quản lý hạn mức trong Cài đặt.')">help</button>
+          <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container cursor-pointer"
+            onclick="switchTab('settings')">
+            <img id="header-avatar" alt="Avatar"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDf4203Qp6lwPiEgnxAIhfQLiS-fHZcQDINcOF67WZPlYSkNxofLVcX8UPk7w2bKovCD6-r5TKmWE8ktxod5HN9-311HniJJ-pSIasP2Ag9wntwBAVO4WnWdLzsACpgalUVTHcIsjC0fcE1EqN1khfiDpmo_7JE1ROgjc4krwxEqyCct4avPG_-LmVCoVrp1if2ZUt6MDdPxRR2CZr_0SegdnwH3N2Rbp7NEyOt-gxPpBuCrASTWytsbOrQw3WNbm2XexXn0wXMy2E"
+              class="w-full h-full object-cover">
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Panels -->
+      <div
+        class="flex-1 max-w-[1200px] w-full mx-auto px-container-padding-mobile lg:px-container-padding-desktop mt-6">
+
+        <!-- ==============================================
+             PANEL A: DASHBOARD PANEL
+             ============================================== -->
+        <div id="dashboard-panel" class="space-y-section-gap block">
+
+          <!-- Month Banner -->
+          <div
+            class="bg-surface-container/30 px-4 py-3.5 rounded-2xl border border-outline-variant/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-xl sm:text-2xl">calendar_month</span>
+              <h3 class="font-headline-md text-sm sm:text-base text-on-surface font-bold">
+                Chu kỳ quản lý chi tiêu: <span id="current-month-year-label" class="text-primary">Tháng 6, 2026</span>
+              </h3>
+            </div>
+            <div class="flex items-center gap-1.5 text-xs text-on-surface-variant font-medium">
+              <span class="w-2 h-2 rounded-full bg-brand-teal animate-pulse"></span>
+              <span data-i18n="this_month">tháng này</span>: <span id="monthly-tracker-dates"
+                class="font-bold">01/06/2026 - 30/06/2026</span>
+            </div>
+          </div>
+
+          <!-- Summary Cards Grid -->
+          <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-gutter">
+            <!-- Total Balance -->
+            <div
+              class="bento-card custom-shadow p-3 sm:p-4 md:p-6 flex flex-col justify-between min-h-[110px] md:min-h-[140px]">
+              <div class="flex justify-between items-start">
+                <span class="text-on-surface-variant font-label-sm text-[10px] sm:text-label-sm"
+                  data-i18n="card_balance">TỔNG SỐ
+                  DƯ</span>
+                <div class="p-1.5 bg-primary-container/30 text-primary rounded-lg">
+                  <span class="material-symbols-outlined text-lg sm:text-xl">account_balance</span>
+                </div>
+              </div>
+              <div class="mt-2 md:mt-4">
+                <span id="stat-balance"
+                  class="font-headline-lg text-lg sm:text-xl md:text-headline-lg text-primary tracking-tight">45.250.000đ</span>
+                <div class="flex items-center text-brand-teal text-[10px] sm:text-xs font-bold mt-1">
+                  <span class="material-symbols-outlined text-xs sm:text-sm">trending_up</span>
+                  <span>+2.4% <span data-i18n="this_month">tháng này</span></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total Income -->
+            <div
+              class="bento-card custom-shadow p-3 sm:p-4 md:p-6 flex flex-col justify-between min-h-[110px] md:min-h-[140px] bg-tertiary-fixed/40">
+              <div class="flex justify-between items-start">
+                <span class="text-on-tertiary-fixed-variant font-label-sm text-[10px] sm:text-label-sm"
+                  data-i18n="card_income">TỔNG
+                  THU</span>
+                <div class="p-1.5 bg-tertiary-container text-on-tertiary-container rounded-lg">
+                  <span class="material-symbols-outlined text-lg sm:text-xl">arrow_downward</span>
+                </div>
+              </div>
+              <div class="mt-2 md:mt-4">
+                <span id="stat-income"
+                  class="font-headline-lg text-lg sm:text-xl md:text-headline-lg text-on-tertiary-fixed tracking-tight">12.500.000đ</span>
+                <p class="text-on-tertiary-fixed-variant text-[10px] sm:text-xs mt-1" data-i18n="income_source_desc">
+                  Nguồn: Lương &
+                  Freelance</p>
+              </div>
+            </div>
+
+            <!-- Total Expense -->
+            <div
+              class="bento-card custom-shadow p-3 sm:p-4 md:p-6 flex flex-col justify-between min-h-[110px] md:min-h-[140px] bg-secondary-container/40">
+              <div class="flex justify-between items-start">
+                <span class="text-on-secondary-container font-label-sm text-[10px] sm:text-label-sm"
+                  data-i18n="card_expense">TỔNG
+                  CHI</span>
+                <div class="p-1.5 bg-secondary-container text-on-secondary-container rounded-lg">
+                  <span class="material-symbols-outlined text-lg sm:text-xl">arrow_upward</span>
+                </div>
+              </div>
+              <div class="mt-2 md:mt-4">
+                <span id="stat-expense"
+                  class="font-headline-lg text-lg sm:text-xl md:text-headline-lg text-secondary tracking-tight">8.420.000đ</span>
+                <p class="text-on-secondary-container text-[10px] sm:text-xs mt-1" id="stat-top-expense-category"><span
+                    data-i18n="most_spend">Nhiều nhất</span>: Ăn uống</p>
+              </div>
+            </div>
+
+            <!-- Remaining Budget -->
+            <div
+              class="bento-card custom-shadow p-3 sm:p-4 md:p-6 flex flex-col justify-between min-h-[110px] md:min-h-[140px] bg-primary-fixed/40">
+              <div class="flex justify-between items-start">
+                <span class="text-on-primary-fixed-variant font-label-sm text-[10px] sm:text-label-sm"
+                  data-i18n="card_budget">NGÂN
+                  SÁCH CÒN LẠI</span>
+                <div class="p-1.5 bg-primary-container text-on-primary-container rounded-lg">
+                  <span class="material-symbols-outlined text-lg sm:text-xl">pie_chart</span>
+                </div>
+              </div>
+              <div class="mt-2 md:mt-3">
+                <span id="stat-remaining-budget"
+                  class="font-headline-lg text-lg sm:text-xl md:text-headline-lg text-on-primary-fixed tracking-tight">3.580.000đ</span>
+                <div class="w-full bg-white/50 rounded-full h-1.5 sm:h-2 mt-2">
+                  <div id="stat-budget-progress"
+                    class="bg-primary h-1.5 sm:h-2 rounded-full transition-all duration-500" style="width: 72%"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Main Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+            <!-- Left Column: Chart & Recent Transactions -->
+            <div class="lg:col-span-2 space-y-gutter">
+              <!-- Expense Chart Bento Card -->
+              <section class="bento-card custom-shadow relative">
+                <div class="px-6 pt-6 flex justify-between items-center">
+                  <div>
+                    <h3 class="font-headline-md text-headline-md text-on-surface" data-i18n="dashboard_budgets_title">
+                      Hạn mức chi tiêu danh mục</h3>
+                    <span id="budget-wheel-subtitle" class="text-sm text-on-surface-variant"
+                      data-i18n="dashboard_budgets_subtitle">Tình hình sử dụng hạn mức</span>
+                  </div>
+                  <button id="toggle-budget-wheel-edit" onclick="toggleBudgetWheelEdit()"
+                    class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-primary rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 border border-outline-variant/10 shadow-sm cursor-pointer">
+                    <span id="budget-wheel-edit-icon" class="material-symbols-outlined text-sm">edit</span>
+                    <span id="budget-wheel-edit-text" data-i18n="btn_edit">Chỉnh sửa</span>
+                  </button>
+                </div>
+
+                <div class="flex flex-col items-center justify-center w-full">
+                  <!-- SVG Wheel Container -->
+                  <div
+                    class="relative w-full max-w-[600px] aspect-[17/10] flex items-center justify-center select-none mx-auto">
+                    <svg id="budget-wheel-svg" class="w-full h-full" viewBox="0 0 680 400">
+                      <!-- Dynamically rendered donut slices & handles -->
+                    </svg>
+                  </div>
+                  <!-- Hidden div to avoid breaking container reference in app.js -->
+                  <div id="dashboard-category-budgets" class="hidden"></div>
+                </div>
+              </section>
+
+              <!-- Recent Transactions -->
+              <section class="bento-card custom-shadow overflow-hidden">
+                <div class="p-6 border-b border-surface-container flex justify-between items-center">
+                  <h3 class="font-headline-md text-headline-md text-on-surface" data-i18n="transactions_title">Các giao
+                    dịch</h3>
+                  <button onclick="switchTab('transactions')" class="text-primary font-bold text-sm hover:underline"
+                    data-i18n="see_all">Xem tất cả</button>
+                </div>
+                <div id="recent-transactions-list" class="p-4 sm:p-6 space-y-3">
+                  <!-- Rendered by JS -->
+                </div>
+              </section>
+            </div>
+
+            <!-- Right Column: Quick Add & Goal Tracker -->
+            <div class="space-y-gutter">
+              <!-- My Wallets Bento Card -->
+              <section class="bento-card custom-shadow p-6 bg-surface-container-low border border-outline-variant/20">
+                <div class="flex justify-between items-center mb-4">
+                  <h4 class="font-bold text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
+                    <span data-i18n="wallets_title">Ví của tôi</span>
+                  </h4>
+                  <button onclick="openCreateWalletModal()"
+                    class="p-1 bg-primary text-white rounded-full hover:scale-105 active:scale-95 transition-transform flex items-center justify-center">
+                    <span class="material-symbols-outlined text-sm">add</span>
+                  </button>
+                </div>
+                <div id="wallets-list-container" class="space-y-3 max-h-[220px] overflow-y-auto custom-scrollbar">
+                  <!-- Rendered dynamically -->
+                </div>
+              </section>
+
+              <!-- Mini Goal Tracker -->
+              <section class="bento-card custom-shadow p-6 bg-secondary-container/20">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-secondary">
+                      <span class="material-symbols-outlined">savings</span>
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-on-surface" data-i18n="goal_title">Tiết kiệm mua Macbook</h4>
+                      <p class="text-xs text-on-surface-variant"><span data-i18n="goal_target">Mục tiêu</span>: <span
+                          id="goal-target-val">45.000.000đ</span></p>
+                    </div>
+                  </div>
+                  <button onclick="addSavingsDialog()"
+                    class="p-1.5 bg-secondary text-white rounded-full hover:scale-105 active:scale-95 transition-transform">
+                    <span class="material-symbols-outlined text-[18px]">add</span>
+                  </button>
+                </div>
+                <div class="space-y-2">
+                  <div class="flex justify-between text-xs font-bold">
+                    <span><span data-i18n="goal_progress">Tiến độ</span>: <span
+                        id="goal-progress-percent">65%</span></span>
+                    <span id="goal-saved-val">29.250.000đ</span>
+                  </div>
+                  <div class="w-full bg-white h-3 rounded-full overflow-hidden">
+                    <div id="goal-progress-bar" class="bg-secondary h-full rounded-full transition-all duration-500"
+                      style="width: 65%"></div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             PANEL B: TRANSACTIONS LIST PANEL (NEW)
+             ============================================== -->
+        <div id="transactions-panel" class="space-y-section-gap hidden">
+          <section class="bento-card custom-shadow p-6">
+            <div
+              class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-outline-variant/10 pb-4">
+              <div>
+                <h3 class="font-headline-md text-headline-md text-on-surface" data-i18n="nav_transactions">Giao dịch
+                </h3>
+                <p class="text-xs text-on-surface-variant" data-i18n="trans_desc">Quản lý và tìm kiếm lịch sử giao dịch
+                  của bạn</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="openQuickAddModal()"
+                  class="py-2.5 px-4 bg-primary text-white text-sm font-bold rounded-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">add</span>
+                  <span data-i18n="add_transaction_btn">Thêm giao dịch</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Filters & Search -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div class="relative">
+                <span
+                  class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-lg">search</span>
+                <input type="text" id="filter-search" oninput="filterTransactions()"
+                  class="w-full bg-surface-container/50 border-none rounded-xl py-2.5 pl-10 pr-4 focus:ring-2 focus:ring-primary shadow-sm text-sm"
+                  placeholder="Tìm kiếm ghi chú...">
+              </div>
+              <div>
+                <select id="filter-category" onchange="filterTransactions()"
+                  class="w-full bg-surface-container/50 border-none rounded-xl py-2.5 pl-4 pr-10 focus:ring-2 focus:ring-primary shadow-sm text-sm cursor-pointer">
+                  <option value="" data-i18n="opt_all_categories">Tất cả danh mục</option>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+              <div>
+                <select id="filter-type" onchange="filterTransactions()"
+                  class="w-full bg-surface-container/50 border-none rounded-xl py-2.5 pl-4 pr-10 focus:ring-2 focus:ring-primary shadow-sm text-sm cursor-pointer">
+                  <option value="" data-i18n="opt_all_types">Tất cả loại giao dịch</option>
+                  <option value="expense" data-i18n="btn_expense">Chi tiêu</option>
+                  <option value="income" data-i18n="btn_income">Thu nhập</option>
+                </select>
+              </div>
+              <div>
+                <select id="filter-sort" onchange="filterTransactions()"
+                  class="w-full bg-surface-container/50 border-none rounded-xl py-2.5 pl-4 pr-10 focus:ring-2 focus:ring-primary shadow-sm text-sm cursor-pointer">
+                  <option value="date-desc" data-i18n="opt_date_new">Mới nhất trước</option>
+                  <option value="date-asc" data-i18n="opt_date_old">Cũ nhất trước</option>
+                  <option value="amount-desc" data-i18n="opt_amount_high">Số tiền giảm dần</option>
+                  <option value="amount-asc" data-i18n="opt_amount_low">Số tiền tăng dần</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Timeline List grouped by date -->
+            <div id="full-transactions-timeline" class="space-y-4">
+              <!-- Rendered dynamically by JS -->
+            </div>
+          </section>
+        </div>
+
+        <!-- ==============================================
+             PANEL C: BUDGET PANEL (NEW)
+             ============================================== -->
+        <div id="budget-panel" class="space-y-section-gap hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+
+            <!-- Left Side: Budget Limits & Progress -->
+            <div class="lg:col-span-2 space-y-gutter">
+              <section class="bento-card custom-shadow p-6">
+                <h3 class="font-headline-md text-headline-md text-on-surface mb-2" data-i18n="budget_limits">Hạn mức
+                  ngân sách</h3>
+                <p class="text-xs text-on-surface-variant mb-6" data-i18n="budget_desc">Kiểm soát chi tiêu tháng bằng
+                  cách quản lý hạn mức.</p>
+
+                <div class="space-y-6">
+                  <div>
+                    <div class="flex justify-between items-center mb-2">
+                      <span class="text-sm font-semibold text-on-surface-variant" data-i18n="total_monthly_limit">Hạn
+                        mức chi tiêu tổng</span>
+                      <button onclick="editBudgetLimitDialog()" class="text-xs text-primary font-bold hover:underline"
+                        data-i18n="edit_limit">Thay đổi hạn mức</button>
+                    </div>
+                    <div class="flex justify-between items-baseline mb-3">
+                      <span id="budget-limit-spent" class="text-2xl font-bold text-secondary">8.420.000đ</span>
+                      <span class="text-sm text-on-surface-variant">/ <span
+                          id="budget-limit-total">12.000.000đ</span></span>
+                    </div>
+                    <div class="w-full bg-surface-container-high h-4 rounded-full overflow-hidden">
+                      <div id="budget-limit-progress-bar"
+                        class="bg-secondary h-full rounded-full transition-all duration-500" style="width: 70%"></div>
+                    </div>
+                    <p class="text-xs text-on-surface-variant mt-2" id="budget-limit-warning"></p>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Category Budgets (Mock) -->
+              <section class="bento-card custom-shadow p-6">
+                <div class="flex justify-between items-center mb-4">
+                  <h3 class="font-headline-md text-headline-md text-on-surface" data-i18n="cat_budgets">Ngân sách theo
+                    danh mục</h3>
+                  <button onclick="openCategoryModal()"
+                    class="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-on-primary rounded-xl font-bold text-xs hover:scale-105 active:scale-95 transition-all shadow-sm cursor-pointer">
+                    <span class="material-symbols-outlined text-sm">add</span>
+                    <span data-i18n="cat_add_btn">Thêm danh mục</span>
+                  </button>
+                </div>
+                <div class="space-y-4" id="category-budgets-list">
+                  <!-- Generated dynamically -->
+                </div>
+              </section>
+            </div>
+
+            <!-- Right Side: Savings Goals Detail -->
+            <div class="space-y-gutter">
+              <section class="bento-card custom-shadow p-6 bg-secondary-container/10">
+                <div class="flex items-center gap-3 mb-6">
+                  <div
+                    class="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center text-secondary">
+                    <span class="material-symbols-outlined text-2xl">savings</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline-md text-headline-md text-on-surface" data-i18n="goal_detail">Chi tiết mục
+                      tiêu</h3>
+                    <p class="text-xs text-on-surface-variant" data-i18n="saving_for_mac">Mua Macbook Pro</p>
+                  </div>
+                </div>
+
+                <div class="space-y-6">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-on-surface-variant" data-i18n="goal_target">Mục tiêu</span>
+                    <span class="font-bold text-on-surface" id="goal-target-detail">45.000.000đ</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-on-surface-variant" data-i18n="goal_saved">Đã tích lũy</span>
+                    <span class="font-bold text-brand-teal" id="goal-saved-detail">29.250.000đ</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-on-surface-variant" data-i18n="goal_remaining">Còn thiếu</span>
+                    <span class="font-bold text-brand-coral" id="goal-remaining-detail">15.750.000đ</span>
+                  </div>
+
+                  <div class="pt-4 border-t border-outline-variant/10">
+                    <button onclick="addSavingsDialog()"
+                      class="w-full py-3 bg-secondary text-white rounded-xl font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-md flex items-center justify-center gap-2">
+                      <span class="material-symbols-outlined">add</span>
+                      <span data-i18n="add_savings">Tích lũy thêm</span>
+                    </button>
+                    <button onclick="resetSavingsDialog()"
+                      class="w-full py-3 mt-3 border border-outline-variant text-on-surface-variant rounded-xl font-bold hover:bg-surface-container/50 active:scale-95 transition-all flex items-center justify-center gap-2">
+                      <span class="material-symbols-outlined text-sm">restart_alt</span>
+                      <span data-i18n="reset_goal">Làm lại mục tiêu</span>
+                    </button>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==============================================
+             PANEL D: SETTINGS PANEL
+             ============================================== -->
+        <div id="settings-panel" class="max-w-[800px] mx-auto space-y-6 hidden">
+          <!-- Account Section -->
+          <section
+            class="bg-surface-container-lowest rounded-[24px] p-6 shadow-sm hover:scale-[1.01] transition-transform duration-200 border border-outline-variant/10">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">person</span>
+                <span data-i18n="acc_info">Thông tin tài khoản</span>
+              </h3>
+              <button onclick="editProfileDialog()" class="text-primary font-bold text-label-sm hover:underline"
+                data-i18n="btn_edit">Chỉnh sửa</button>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <div class="relative w-20 h-20 rounded-full border-4 border-primary-container p-1 bg-white">
+                <img id="profile-avatar" alt="Avatar người dùng" class="w-full h-full rounded-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDf4203Qp6lwPiEgnxAIhfQLiS-fHZcQDINcOF67WZPlYSkNxofLVcX8UPk7w2bKovCD6-r5TKmWE8ktxod5HN9-311HniJJ-pSIasP2Ag9wntwBAVO4WnWdLzsACpgalUVTHcIsjC0fcE1EqN1khfiDpmo_7JE1ROgjc4krwxEqyCct4avPG_-LmVCoVrp1if2ZUt6MDdPxRR2CZr_0SegdnwH3N2Rbp7NEyOt-gxPpBuCrASTWytsbOrQw3WNbm2XexXn0wXMy2E">
+                <button
+                  class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-1 shadow-md hover:scale-110 active:scale-95 transition-transform"
+                  onclick="changeAvatarMock()">
+                  <span class="material-symbols-outlined text-[16px]">photo_camera</span>
+                </button>
+              </div>
+              <div>
+                <h4 id="profile-name" class="font-headline-md text-headline-md text-on-surface">Minh</h4>
+                <p id="profile-email" class="font-body-md text-body-md text-on-surface-variant">anviet.design@finz.vn
+                </p>
+                <div class="mt-1 flex items-center gap-2">
+                  <span
+                    class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded-full uppercase tracking-wider">Premium</span>
+                  <span class="font-body-md text-[12px] text-on-surface-variant opacity-60"
+                    data-i18n="member_since">Thành viên từ 2023</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Preferences Section -->
+          <section class="bg-white rounded-[24px] p-6 shadow-sm border border-outline-variant/10">
+            <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2 mb-6">
+              <span class="material-symbols-outlined text-primary">tune</span>
+              <span data-i18n="display_prefs">Tùy chọn hiển thị</span>
+            </h3>
+
+            <div class="space-y-4">
+              <!-- Language -->
+              <div class="flex items-center justify-between py-2">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-on-surface-variant">language</span>
+                  <span class="font-body-lg text-body-lg text-on-surface" data-i18n="pref_lang">Ngôn ngữ</span>
+                </div>
+                <select id="setting-language" onchange="changeLanguageSetting()"
+                  class="bg-surface-container border-none rounded-xl font-body-md pl-4 pr-10 py-2 focus:ring-2 focus:ring-primary outline-none cursor-pointer">
+                  <option value="vi">Tiếng Việt</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+
+              <!-- Currency -->
+              <div class="flex items-center justify-between py-2 border-t border-outline-variant/10">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-on-surface-variant">payments</span>
+                  <span class="font-body-lg text-body-lg text-on-surface" data-i18n="pref_currency">Tiền tệ</span>
+                </div>
+                <select id="setting-currency" onchange="changeCurrencySetting()"
+                  class="bg-surface-container border-none rounded-xl font-body-md pl-4 pr-10 py-2 focus:ring-2 focus:ring-primary outline-none cursor-pointer">
+                  <option value="vnd">VND (₫)</option>
+                  <option value="usd">USD ($)</option>
+                  <option value="jpy">JPY (¥)</option>
+                </select>
+              </div>
+
+              <!-- Theme Mode -->
+              <div class="flex flex-col gap-3 py-2 border-t border-outline-variant/10">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-on-surface-variant">palette</span>
+                  <span class="font-body-lg text-body-lg text-on-surface" data-i18n="pref_theme">Chế độ giao diện</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2 bg-surface-container p-1 rounded-2xl">
+                  <button id="theme-light-btn" onclick="setThemeMode('light')"
+                    class="flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-primary font-bold bg-white shadow-sm transition-all focus:outline-none">
+                    <span class="material-symbols-outlined text-[18px]">light_mode</span>
+                    <span class="text-label-sm" data-i18n="theme_light">Sáng</span>
+                  </button>
+                  <button id="theme-dark-btn" onclick="setThemeMode('dark')"
+                    class="flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-on-surface-variant hover:bg-surface-variant/50 transition-all focus:outline-none">
+                    <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+                    <span class="text-label-sm" data-i18n="theme_dark">Tối</span>
+                  </button>
+                  <button id="theme-auto-btn" onclick="setThemeMode('auto')"
+                    class="flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-on-surface-variant hover:bg-surface-variant/50 transition-all focus:outline-none">
+                    <span class="material-symbols-outlined text-[18px]">brightness_auto</span>
+                    <span class="text-label-sm" data-i18n="theme_auto">Tự động</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Financial Management Section -->
+          <section class="bg-white rounded-[24px] p-6 shadow-sm border border-outline-variant/10">
+            <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2 mb-6">
+              <span class="material-symbols-outlined text-primary">account_balance</span>
+              <span data-i18n="fin_mgmt">Quản lý tài chính</span>
+            </h3>
+            <div class="space-y-3">
+              <button onclick="manageCategoriesDialog()"
+                class="w-full flex items-center justify-between p-4 rounded-2xl bg-surface-container hover:bg-primary-container/20 transition-all group">
+                <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center">
+                    <span class="material-symbols-outlined text-on-tertiary-container">category</span>
+                  </div>
+                  <div class="text-left">
+                    <p class="font-body-lg font-bold text-on-surface" data-i18n="cat_title">Danh mục chi tiêu</p>
+                    <p class="text-[12px] text-on-surface-variant" data-i18n="cat_subtitle">Tùy chỉnh icon và tên danh
+                      mục</p>
+                  </div>
+                </div>
+                <span
+                  class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+              </button>
+              <button onclick="switchTab('budget')"
+                class="w-full flex items-center justify-between p-4 rounded-2xl bg-surface-container hover:bg-secondary-container/20 transition-all group">
+                <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+                    <span class="material-symbols-outlined text-on-secondary-container">monitoring</span>
+                  </div>
+                  <div class="text-left">
+                    <p class="font-body-lg font-bold text-on-surface" data-i18n="budget_limits">Hạn mức ngân sách</p>
+                    <p class="text-[12px] text-on-surface-variant" data-i18n="budget_sub">Thiết lập chi tiêu tối đa mỗi
+                      tháng</p>
+                  </div>
+                </div>
+                <span
+                  class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Data & Privacy -->
+          <section class="bg-white rounded-[24px] p-6 shadow-sm border border-outline-variant/10">
+            <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2 mb-4">
+              <span class="material-symbols-outlined text-primary">security</span>
+              <span data-i18n="data_privacy">Dữ liệu & Bảo mật</span>
+            </h3>
+            <div
+              class="p-4 rounded-2xl bg-primary-fixed/30 border border-primary-fixed flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary">download</span>
+                <div>
+                  <p class="font-body-lg font-bold text-on-surface" data-i18n="export_title">Xuất dữ liệu tài chính</p>
+                  <p class="text-[12px] text-on-surface-variant" data-i18n="export_sub">Tải lịch sử giao dịch (.csv,
+                    .xlsx)</p>
+                </div>
+              </div>
+              <button onclick="exportTransactionsCSV()"
+                class="bg-primary text-white font-bold py-2.5 px-6 rounded-xl hover:scale-[1.02] active:scale-95 transition-all text-label-sm shadow-md">
+                <span data-i18n="export_btn">Tải xuống CSV</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Logout Card -->
+          <div class="pt-4">
+            <button onclick="handleLogout()"
+              class="w-full flex items-center justify-center gap-2 p-4 rounded-2xl bg-error-container text-on-error-container hover:bg-error hover:text-white transition-all duration-300 font-bold shadow-sm">
+              <span class="material-symbols-outlined">logout</span>
+              <span data-i18n="logout_device">Đăng xuất khỏi thiết bị</span>
+            </button>
+            <p class="text-center text-[12px] text-on-surface-variant mt-4 opacity-50">Phiên bản OhaYo v1.0.0 • Made
+              with ❤️</p>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Bottom Navigation Bar (Mobile Only) -->
+    <nav
+      class="fixed bottom-2 left-0 right-0 mx-auto w-full max-w-md z-50 flex justify-around items-center px-4 py-1 bg-surface shadow-lg lg:hidden rounded-t-3xl border-t border-outline-variant/10">
+      <a id="nav-dashboard-mb" onclick="switchTab('dashboard')"
+        class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-2 py-1 cursor-pointer transition-all"
+        href="javascript:void(0)">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="text-[11px] font-bold whitespace-nowrap" data-i18n="nav_overview">Tổng quan</span>
+      </a>
+      <a id="nav-transactions-mb" onclick="switchTab('transactions')"
+        class="flex flex-col items-center justify-center bg-transparent text-on-surface-variant rounded-full px-2 py-1 cursor-pointer transition-all"
+        href="javascript:void(0)">
+        <span class="material-symbols-outlined">swap_horiz</span>
+        <span class="text-[11px] font-bold whitespace-nowrap" data-i18n="nav_transactions">Giao dịch</span>
+      </a>
+      <div class="relative -top-4">
+        <button onclick="openQuickAddModal()"
+          class="w-14 h-14 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center active:scale-90 transition-transform">
+          <span class="material-symbols-outlined text-3xl">add</span>
+        </button>
+      </div>
+      <a id="nav-budget-mb" onclick="switchTab('budget')"
+        class="flex flex-col items-center justify-center bg-transparent text-on-surface-variant rounded-full px-2 py-1 cursor-pointer transition-all"
+        href="javascript:void(0)">
+        <span class="material-symbols-outlined">account_balance_wallet</span>
+        <span class="text-[11px] font-bold whitespace-nowrap" data-i18n="nav_budget">Ngân sách</span>
+      </a>
+      <a id="nav-settings-mb" onclick="switchTab('settings')"
+        class="flex flex-col items-center justify-center bg-transparent text-on-surface-variant rounded-full px-2 py-1 cursor-pointer transition-all"
+        href="javascript:void(0)">
+        <span class="material-symbols-outlined">settings</span>
+        <span class="text-[11px] font-bold whitespace-nowrap" data-i18n="nav_settings">Cài đặt</span>
+      </a>
+    </nav>
+  </div>
+
+
+  <!-- ==============================================
+       3. TRANSACTION DIALOG / MODAL (POPUP FORM)
+       ============================================== -->
+  <div id="quick-add-modal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 hidden transition-opacity duration-300">
+    <div
+      class="bg-white dark:bg-surface-dim max-w-md w-full rounded-[24px] p-6 shadow-2xl relative transform scale-95 transition-transform duration-300"
+      onclick="event.stopPropagation()">
+      <button onclick="closeQuickAddModal()"
+        class="absolute right-4 top-4 text-on-surface-variant hover:bg-surface-container rounded-full p-1.5">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <h3 class="font-headline-md text-headline-md text-on-surface mb-6" data-i18n="add_transaction_btn">Thêm giao dịch
+      </h3>
+
+      <!-- Copy of the Form inside Modal -->
+      <form id="modal-add-form" class="space-y-4" onsubmit="handleModalAdd(event)">
+        <div class="grid grid-cols-2 gap-3 mb-2">
+          <button type="button" id="modal-type-expense-btn" onclick="setModalTransactionType('expense')"
+            class="py-2 rounded-xl border-2 border-primary bg-primary/5 text-primary font-bold text-sm transition-all focus:outline-none"
+            data-i18n="btn_expense">Chi tiêu</button>
+          <button type="button" id="modal-type-income-btn" onclick="setModalTransactionType('income')"
+            class="py-2 rounded-xl border-2 border-transparent bg-surface-container text-on-surface-variant font-bold text-sm transition-all focus:outline-none"
+            data-i18n="btn_income">Thu nhập</button>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider"
+            data-i18n="input_amount">Số tiền</label>
+          <div class="relative">
+            <input id="modal-amount"
+              class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-4 pr-12 text-lg font-bold focus:ring-2 focus:ring-primary shadow-sm"
+              placeholder="0" type="number" required min="1">
+            <span
+              class="modal-currency-symbol absolute right-4 top-1/2 -translate-y-1/2 font-bold text-on-surface-variant">đ</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider"
+            data-i18n="input_category">Danh mục</label>
+          <select id="modal-category"
+            class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-4 pr-10 focus:ring-2 focus:ring-primary shadow-sm outline-none cursor-pointer">
+            <!-- Categories populated by JS -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider"
+            data-i18n="input_wallet">Ví thanh toán</label>
+          <select id="modal-wallet"
+            class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-4 pr-10 focus:ring-2 focus:ring-primary shadow-sm outline-none cursor-pointer">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider"
+            data-i18n="input_note">Ghi chú</label>
+          <input id="modal-note"
+            class="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary shadow-sm"
+            placeholder="Tên khoản chi..." type="text" required>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider"
+            data-i18n="input_date">Ngày</label>
+          <input id="modal-date"
+            class="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary shadow-sm"
+            type="date" required>
+        </div>
+
+        <button
+          class="w-full py-4 bg-primary text-on-primary rounded-xl font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-lg mt-4"
+          type="submit" data-i18n="save_btn">
+          Lưu giao dịch
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       5. CREATE WALLET DIALOG / MODAL (POPUP FORM)
+       ============================================== -->
+  <div id="create-wallet-modal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 hidden transition-opacity duration-300">
+    <div
+      class="bg-white dark:bg-surface-dim max-w-md w-full rounded-[24px] p-6 shadow-2xl relative transform scale-95 transition-transform duration-300"
+      onclick="event.stopPropagation()">
+      <button onclick="closeCreateWalletModal()"
+        class="absolute right-4 top-4 text-on-surface-variant hover:bg-surface-container rounded-full p-1.5">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <h3 class="font-headline-md text-headline-md text-on-surface mb-6" data-i18n="create_wallet_title">Tạo ví chi tiêu
+        mới</h3>
+
+      <form id="wallet-create-form" class="space-y-4" onsubmit="handleCreateWallet(event)">
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider"
+            data-i18n="wallet_name_label">Tên ví</label>
+          <input id="new-wallet-name"
+            class="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary shadow-sm"
+            placeholder="Ví Techcombank, Tiền mặt..." type="text" required>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider"
+            data-i18n="wallet_balance_label">Số dư ban đầu</label>
+          <div class="relative">
+            <input id="new-wallet-balance"
+              class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-4 pr-12 text-lg font-bold focus:ring-2 focus:ring-primary shadow-sm"
+              placeholder="0" type="number" required min="0">
+            <span
+              class="modal-currency-symbol absolute right-4 top-1/2 -translate-y-1/2 font-bold text-on-surface-variant">đ</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider"
+            data-i18n="wallet_icon_label">Biểu tượng</label>
+          <select id="new-wallet-icon"
+            class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-4 pr-10 focus:ring-2 focus:ring-primary shadow-sm cursor-pointer">
+            <option value="payments" data-i18n="wallet_icon_cash">💵 Tiền mặt (Cash)</option>
+            <option value="credit_card" data-i18n="wallet_icon_card">💳 Thẻ ngân hàng (Card)</option>
+            <option value="account_balance_wallet" data-i18n="wallet_icon_ewallet">📱 Ví điện tử (E-Wallet)</option>
+            <option value="savings" data-i18n="wallet_icon_savings">🐷 Heo đất (Savings)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider"
+            data-i18n="wallet_color_label">Màu sắc</label>
+          <select id="new-wallet-color"
+            class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-4 pr-10 focus:ring-2 focus:ring-primary shadow-sm cursor-pointer">
+            <option value="bg-brand-blue-light text-brand-blue" data-i18n="wallet_color_blue">Xanh dương nhạt
+            </option>
+            <option value="bg-brand-purple-light text-brand-purple" data-i18n="wallet_color_purple">Tím
+              pastel</option>
+            <option value="bg-brand-teal-light text-brand-teal" data-i18n="wallet_color_teal">Xanh ngọc
+              pastel</option>
+            <option value="bg-brand-yellow-light text-brand-yellow" data-i18n="wallet_color_yellow">Vàng kem
+              pastel</option>
+            <option value="bg-brand-coral-light text-brand-coral" data-i18n="wallet_color_coral">San hô pastel</option>
+          </select>
+        </div>
+
+        <button
+          class="w-full py-4 bg-primary text-on-primary rounded-xl font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-lg mt-4"
+          type="submit" data-i18n="wallet_save_btn">
+          Tạo ví
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ==============================================
+       6. DYNAMIC CATEGORY DIALOG / MODAL (POPUP FORM)
+       ============================================== -->
+  <div id="category-modal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 hidden transition-opacity duration-300">
+    <div
+      class="bg-white dark:bg-zinc-900 max-w-lg w-full rounded-[24px] p-6 shadow-2xl relative transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto"
+      onclick="event.stopPropagation()">
+      <button onclick="closeCategoryModal()"
+        class="absolute right-4 top-4 text-on-surface-variant hover:bg-surface-container rounded-full p-1.5 dark:hover:bg-zinc-800">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <h3 id="category-modal-title" class="font-headline-md text-headline-md text-on-surface mb-6 dark:text-white">Thêm
+        danh mục</h3>
+
+      <form id="category-modal-form" class="space-y-4" onsubmit="saveCategory(event)">
+        <input type="hidden" id="category-modal-id">
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider dark:text-zinc-400">Tên
+              (Tiếng Việt)</label>
+            <input id="category-modal-name-vi"
+              class="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary shadow-sm dark:bg-zinc-800 dark:text-white"
+              placeholder="Ăn uống, Giải trí..." type="text" required>
+          </div>
+          <div>
+            <label
+              class="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider dark:text-zinc-400">Tên
+              (English)</label>
+            <input id="category-modal-name-en"
+              class="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary shadow-sm dark:bg-zinc-800 dark:text-white"
+              placeholder="Dining, Entertainment..." type="text" required>
+          </div>
+        </div>
+
+        <div>
+          <label
+            class="block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider dark:text-zinc-400">Hạn
+            mức chi tiêu tháng</label>
+          <div class="relative">
+            <input id="category-modal-limit"
+              class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-4 pr-12 text-lg font-bold focus:ring-2 focus:ring-primary shadow-sm dark:bg-zinc-800 dark:text-white"
+              placeholder="0" type="number" required min="0">
+            <span
+              class="modal-currency-symbol absolute right-4 top-1/2 -translate-y-1/2 font-bold text-on-surface-variant dark:text-zinc-400">đ</span>
+          </div>
+        </div>
+
+        <!-- Cute Icon Picker Grid -->
+        <div>
+          <label
+            class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider dark:text-zinc-400">Chọn
+            biểu tượng dễ thương</label>
+          <div
+            class="grid grid-cols-5 gap-2 max-h-[140px] overflow-y-auto p-2 bg-surface-container-low dark:bg-zinc-800 rounded-2xl border border-outline-variant/10"
+            id="category-icon-picker">
+            <!-- Rendered by JS -->
+          </div>
+          <input type="hidden" id="category-modal-icon" required>
+        </div>
+
+        <!-- Color Picker Selection -->
+        <div>
+          <label
+            class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider dark:text-zinc-400">Chọn
+            màu sắc</label>
+          <div class="flex flex-wrap gap-2.5 p-2 justify-center" id="category-color-picker">
+            <!-- Rendered by JS -->
+          </div>
+          <input type="hidden" id="category-modal-color" required>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button id="category-modal-delete-btn" type="button" onclick="deleteCategory()"
+            class="flex-1 py-3.5 bg-brand-coral/10 text-brand-coral hover:bg-brand-coral/20 rounded-xl font-bold transition-all hidden cursor-pointer">
+            Xóa danh mục
+          </button>
+          <button type="submit"
+            class="flex-1 py-3.5 bg-primary text-on-primary rounded-xl font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-lg cursor-pointer">
+            Lưu danh mục
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ==============================================
+       4. JAVASCRIPT STATE & APPLICATION ENGINE
+       ============================================== -->
+  <script type="module" src="./app.js"></script>
+</body>
+
+</html>

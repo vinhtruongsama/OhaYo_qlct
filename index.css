@@ -1,0 +1,234 @@
+:root {
+    /* Brand core colors */
+    --color-text: #16100F;
+    --color-text-muted: #33321E;
+
+    /* Saturated brand colors */
+    --color-teal-saturated: #E2AD70;
+    --color-purple-saturated: #953ad5;
+    --color-blue-saturated: #ff6f69;
+    --color-yellow-saturated: #1d2eff;
+    --color-coral-saturated: #0DAA72;
+
+    /* Pastel brand colors */
+    --color-teal-pastel: #01cdfe;
+    --color-purple-pastel: #FF71CE;
+    --color-blue-pastel: #bc85ec;
+    --color-yellow-pastel: #7560ff;
+    --color-coral-pastel: #fffb96;
+
+    /* Semantic mappings for the theme */
+    --color-primary: var(--color-purple-saturated);
+    --color-primary-container: var(--color-blue-pastel);
+    --color-secondary: var(--color-coral-saturated);
+    --color-secondary-container: var(--color-coral-pastel);
+    --color-tertiary: var(--color-teal-saturated);
+    --color-tertiary-container: var(--color-teal-pastel);
+}
+
+/* Dark mode overrides */
+html.dark {
+    --color-text: #fafaeb;
+    --color-text-muted: #dbdbcd;
+
+    --color-primary: var(--color-purple-saturated);
+    --color-secondary: var(--color-coral-saturated);
+    --color-tertiary: var(--color-teal-saturated);
+
+    --color-primary-container: #222142;
+    --color-secondary-container: #4f1a10;
+    --color-tertiary-container: #003b32;
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.fill-icon {
+    font-variation-settings: 'FILL' 1;
+}
+
+html,
+body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+body {
+    background-color: #FFFFF0;
+    /* Surface Level 0 - Ivory White from Style Guidance */
+    color: var(--color-text);
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-headline {
+    font-family: 'Quicksand', sans-serif;
+}
+
+.custom-shadow {
+    box-shadow: 0px 4px 20px rgba(174, 198, 207, 0.15);
+}
+
+.bento-card {
+    border-radius: 24px;
+    background: #FFFFFF;
+    transition: transform 0.2s ease-in-out, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bento-card:hover {
+    transform: scale(1.01);
+}
+
+/* Scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-blue-saturated);
+    border-radius: 10px;
+}
+
+/* Voice animation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+}
+
+.voice-active {
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Illustration float animation */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+@media (max-width: 767px) {
+    .summary-details-card.show-mobile {
+        display: flex !important;
+    }
+}
+
+/* Dark Mode Overrides */
+html.dark body {
+    background-color: #12130c;
+    /* Muted black-olive */
+    color: #f1f2e3;
+    /* Muted white */
+}
+
+html.dark .bento-card {
+    background-color: #1e1f18;
+    /* Dark surface level 1 */
+    box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.4);
+}
+
+html.dark aside,
+html.dark header,
+html.dark nav {
+    background-color: #1e1f18 !important;
+}
+
+html.dark .bg-surface-container-low,
+html.dark .bg-surface-container {
+    background-color: #1e1f18 !important;
+}
+
+html.dark .bg-white {
+    background-color: #1e1f18 !important;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+    background-color: #2b2c22 !important;
+    color: #f1f2e3 !important;
+    border: 1px solid #4b4c3f !important;
+}
+
+html.dark .divide-surface-container>* {
+    border-color: #2b2c22 !important;
+}
+
+html.dark th {
+    background-color: #2b2c22 !important;
+    color: #c2c7ca !important;
+}
+
+html.dark tr:hover {
+    background-color: #2b2c22 !important;
+}
+
+html.dark .bg-surface-container-lowest {
+    background-color: #12130c !important;
+}
+
+html.dark .border-outline-variant\/10,
+html.dark .border-outline-variant\/20,
+html.dark .border-outline-variant\/30 {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .text-on-surface-variant {
+    color: var(--color-blue-saturated) !important;
+}
+
+html.dark .text-on-surface {
+    color: #fafaeb !important;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+a,
+button,
+input,
+select,
+textarea,
+th,
+td {
+    opacity: 1 !important;
+}
