@@ -1849,26 +1849,28 @@ function setupListeners() {
       const password = "password123";
 
       try {
+        if (!supabase || !supabase.auth) {
+          throw new Error("Supabase auth client not initialized");
+        }
         const { error } = await supabase.auth.signInWithPassword({
           email: email,
           password: password
         });
 
         if (error) {
-          console.warn("Demo guest login on Supabase failed. Falling back to local offline mode.", error.message);
-          state.user = {
-            name: "Văn Thương (Local Guest)",
-            email: "vanthuong@example.com"
-          };
-          state.isLoggedIn = true;
-          localStorage.setItem("finz_user", JSON.stringify(state.user));
-          showToast(state.language === 'vi' ? "Đăng nhập Local Guest thành công!" : "Local Guest login successful!");
-          renderApp();
-        } else {
-          showToast(state.language === 'vi' ? "Đăng nhập Demo Account thành công!" : "Demo login successful!");
+          throw error;
         }
+        showToast(state.language === 'vi' ? "Đăng nhập Demo Account thành công!" : "Demo login successful!");
       } catch (err) {
-        console.error(err);
+        console.warn("Supabase auth failed. Falling back to local offline mode:", err.message);
+        state.user = {
+          name: "Văn Thương (Local Guest)",
+          email: "vanthuong@example.com"
+        };
+        state.isLoggedIn = true;
+        localStorage.setItem("finz_user", JSON.stringify(state.user));
+        showToast(state.language === 'vi' ? "Đăng nhập Local Guest thành công!" : "Local Guest login successful!");
+        renderApp();
       }
     });
   }
